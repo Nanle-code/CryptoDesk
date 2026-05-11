@@ -100,3 +100,8 @@ out/
 **/api-keys.*
 **/config.*.js
 **/secrets.*
+
+# Internal documentation (keep private)
+roadmap.md
+**/internal-*
+**/confidential-*

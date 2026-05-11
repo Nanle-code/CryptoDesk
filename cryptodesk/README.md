@@ -1,137 +1,241 @@
 # CryptoDesk — AI-Powered On-Chain Finance Intelligence
 
-> A one-person crypto intelligence business powered by SoSoValue API × Claude AI
-> Built for the SoSoValue Buildathon 2026
+> 🚀 **Live Demo:** [https://your-username.github.io/cryptodesk-project](https://your-username.github.io/cryptodesk-project)
+> 
+> A one-person crypto intelligence business powered by SoSoValue API × Grok AI
+> Built for SoSoValue Buildathon 2026 | 🏆 **Wave 1 Complete**
 
 ---
 
-## What is CryptoDesk?
+## ✨ What is CryptoDesk?
 
-CryptoDesk is an agentic finance application that functions as a **one-person crypto news agency and intelligence desk**. It ingests real-time data from SoSoValue's API, processes it with Claude AI, and delivers structured daily briefings, sector analysis, signal detection, and — in later waves — index publishing and on-chain execution via SoDEX.
+CryptoDesk is an **elite crypto intelligence terminal** that functions as a one-person crypto news agency and trading desk. It transforms raw market data into actionable intelligence through AI-powered analysis.
+
+### 🎯 Current Capabilities (Wave 1 ✅)
+- **📰 Live News Feed**: Real-time crypto news from SoSoValue API
+- **🤖 AI Briefings**: Grok-powered market intelligence and analysis  
+- **📅 Macro Calendar**: Economic events and market-moving catalysts
+- **📊 Sector Spotlight**: Real-time sector performance and trends
+- **📈 Market Tickers**: Live price data for major cryptocurrencies
+- **🔗 Source Links**: Direct access to original news sources
+- **📱 Responsive Design**: Works seamlessly on desktop and mobile
+
+### 🎨 Design Philosophy
+- **Aesthetic**: Financial broadsheet meets Bloomberg terminal
+- **Typography**: Playfair Display + IBM Plex Mono + Barlow
+- **Color Palette**: Newsprint ivory with ink black and signal red accents
+- **Architecture**: Single-file deployment for maximum reliability
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 cryptodesk/
-├── index.html              # Wave 1: Main app entry point (single-file, deployable)
-├── README.md               # This file
+├── index.html              # 🚀 Main application (single-file, production-ready)
+├── index-v2.html          # 🔄 Enhanced version (in development)
+├── README.md              # 📖 Project documentation
+├── manifest.json          # 📱 PWA configuration
 │
 ├── src/
-│   ├── api/
-│   │   ├── sosovalue.js    # SoSoValue API client (all modules)
-│   │   ├── claude.js       # Claude AI client
-│   │   └── sodex.js        # SoDEX trading API client (Wave 2+)
+│   ├── api/               # 🔌 API integration layer
+│   │   ├── sosovalue.js   # SoSoValue data API client
+│   │   ├── grok.js        # Grok AI client  
+│   │   ├── claude.js      # Claude AI client (legacy)
+│   │   └── sodex.js       # SoDEX trading API (Wave 3)
 │   │
-│   ├── components/
-│   │   ├── newsfeed.js     # News feed + filtering
-│   │   ├── briefing.js     # AI briefing generator
-│   │   ├── macropanel.js   # Macro events calendar
-│   │   ├── sectorchart.js  # Sector spotlight (Wave 2)
-│   │   ├── indexbuilder.js # Index designer (Wave 2)
-│   │   └── trading.js      # SoDEX execution panel (Wave 3)
+│   ├── components/        # 🧩 Reusable UI components
+│   │   └── VirtualList.js # High-performance list rendering
 │   │
-│   └── utils/
-│       ├── format.js       # Number/date formatters
-│       ├── sentiment.js    # Sentiment scoring engine
-│       └── signals.js      # Signal detection logic
+│   ├── core/             # ⚙️ Application core
+│   │   ├── app.js        # Main application controller
+│   │   ├── state.js      # State management
+│   │   └── motion.js     # Animation engine
+│   │
+│   ├── styles/           # 🎨 Styling system
+│   │   ├── design-system.css
+│   │   ├── components.css
+│   │   └── animations.css
+│   │
+│   └── utils/            # 🛠️ Utility functions
+│       ├── format.js     # Data formatting
+│       └── intelligence.js # AI processing utilities
 │
-├── docs/
-│   ├── ROADMAP.md          # Full wave-by-wave roadmap
-│   ├── API_USAGE.md        # API integration reference
-│   └── ARCHITECTURE.md     # System architecture diagram
+├── docs/                # 📚 Documentation
+│   └── ROADMAP.md       # Buildathon roadmap
 │
-└── public/
-    └── favicon.svg         # CryptoDesk logo
+└── SECURITY.md          # 🔐 Security guidelines
 ```
 
 ---
 
-## Buildathon Roadmap
+## 🚀 Quick Start & Deployment
 
-### Wave 1 — News Agency (Complete ✓)
-**May 1–12 | $3,000 USDC**
-- Live news feed from SoSoValue `/news`, `/news/hot`, `/news/featured`
-- AI-generated daily briefings via Claude
-- Macro events calendar
-- Sector spotlight
-- Market ticker sidebar
-- Deployable as single HTML file
+### 🎯 Try It Now (No Installation Required)
+1. **Live Demo**: [Open CryptoDesk](https://your-username.github.io/cryptodesk-project/cryptodesk/index.html)
+2. Click **⚙ Settings** (top-right)
+3. Enter your API keys:
+   - **SoSoValue API Key**: Get from [SoSoValue Developer Portal](https://sosovalue.com)
+   - **Grok API Key**: Get from [XAI Platform](https://x.ai)
+4. Click **Connect** and start exploring!
 
-### Wave 2 — Intelligence Platform
-**May 18–29 | $3,000 USDC**
-- Index tracker dashboard (`/indices`, `/indices/{ticker}/constituents`)
-- ETF flow monitor (`/etfs/summary-history`, `/etfs/{ticker}/history`)
-- BTC Treasury tracker (`/btc-treasuries`, purchase history)
-- Fundraising radar (`/fundraising/projects`)
-- Signal detection engine (AI scores news → bullish/bearish/neutral)
-- Interactive charts (klines, historical data)
-- SoDEX API integration (read-only: orderbook, market data)
-- User watchlist with persistent state
+### 🛠️ Local Development
+```bash
+# Clone the repository
+git clone https://github.com/your-username/cryptodesk-project.git
+cd cryptodesk-project
 
-### Wave 3 — One-Person Fund Manager
-**Jun 4–15 | $4,000 USDC**
-- Index designer: compose custom token baskets using SoSoValue index data
-- Portfolio rebalancing calculator
-- SoDEX execution: live order placement via `/order` API
-- Risk control dashboard (position sizing, stop-loss logic)
-- Automated strategy scheduler (daily/weekly rebalance)
-- Full audit trail of all AI-generated signals and trades
-- Shareable public fund page (your "one-person hedge fund" URL)
+# Start local server
+python3 -m http.server 8000
+# or
+npx serve .
 
-### Demo Day — Final Presentation
-**TBD | Grand Prize**
-- Full end-to-end demo: news → signal → index → trade execution
-- Live on-chain proof of executed orders on SoDEX/ValueChain
-- Published index available for others to follow
-- Video walkthrough + judge Q&A
+# Open in browser
+open http://localhost:8000/cryptodesk/index.html
+```
 
----
+### 🌐 Deployment Options
 
-## APIs Used
+#### GitHub Pages (Recommended)
+```bash
+# Deploy to GitHub Pages
+git subtree push --prefix cryptodesk origin gh-pages
+```
 
-| Module | Endpoints | Wave |
-|--------|-----------|------|
-| Feeds | `/news`, `/news/hot`, `/news/featured` | W1 |
-| Macro | `/macro/events`, `/macro/events/{event}/history` | W1 |
-| Currency | `/currencies/sector-spotlight`, `/currencies/{id}/market-snapshot` | W1 |
-| ETF | `/etfs/summary-history`, `/etfs/{ticker}/market-snapshot` | W2 |
-| SoSoValue Index | `/indices`, `/indices/{ticker}/constituents`, `/klines` | W2 |
-| BTC Treasuries | `/btc-treasuries`, `/btc-treasuries/{ticker}/purchase-history` | W2 |
-| Fundraising | `/fundraising/projects`, `/fundraising/projects/{id}` | W2 |
-| Analysis | `/analyses`, `/analyses/{chart_name}` | W2 |
-| SoDEX | Order placement, orderbook, portfolio | W3 |
-| Claude AI | Briefings, signals, index recommendations | W1–W3 |
+#### Netlify/Vercel
+1. Connect your repository
+2. Set build directory: `cryptodesk`
+3. Deploy automatically on every push
+
+#### Static Hosting
+Upload the entire `cryptodesk/` folder to any static host (AWS S3, Firebase Hosting, etc.)
+
+### ⚙️ Configuration
+- **API Keys**: Stored in browser session only (never saved to disk)
+- **No Build Step**: Single HTML file - just open and use
+- **Offline Ready**: Works without internet (cached data)
+- **PWA Support**: Install as desktop app (manifest.json included)
 
 ---
 
-## Quick Start
+## 🔌 API Integration
 
-1. Open `index.html` in any browser (no build step needed for Wave 1)
-2. Click **⚙ Settings** in the top-right
-3. Enter your SoSoValue API key and Claude API key
-4. Click **Connect** — live data loads instantly
+### Currently Implemented (Wave 1 ✅)
+| Service | Purpose | Authentication |
+|---------|---------|----------------|
+| **SoSoValue API** | Real-time news, market data, macro events | `x-soso-api-key` header |
+| **Grok AI (XAI)** | Market intelligence, briefings, analysis | Bearer token authentication |
 
-For deployment: upload `index.html` to GitHub Pages, Netlify, or any static host.
-
----
-
-## Tech Stack
-
-- **Frontend**: Vanilla HTML/CSS/JS (Wave 1–2), planned React migration (Wave 3)
-- **Data**: SoSoValue OpenAPI v1
-- **AI**: Claude Sonnet 4 via Anthropic API
-- **Execution**: SoDEX REST API (Wave 3)
-- **Hosting**: GitHub Pages (static, zero cost)
+### Planned Integration (Wave 2-3)
+| Service | Purpose | Status |
+|---------|---------|--------|
+| **SoSoValue Indices** | Index tracking, constituents | 🔄 Coming Soon |
+| **ETF Flow Data** | Institutional flow monitoring | 🔄 Coming Soon |
+| **BTC Treasuries** | Corporate Bitcoin holdings | 🔄 Coming Soon |
+| **SoDEX Trading** | Order execution, portfolio | ⏳ Wave 3 |
 
 ---
 
-## Team
+## 🎯 Key Features
 
-Built solo for the SoSoValue Buildathon 2026.
-Contact: [your contact info]
+### 📰 News & Intelligence
+- **Real-time Feed**: Live crypto news from SoSoValue
+- **Smart Filtering**: By category, source, and keywords
+- **AI Analysis**: Grok-powered market insights
+- **Source Links**: Direct access to original articles
+
+### 📊 Market Data
+- **Live Tickers**: BTC, ETH, SOL, BNB prices
+- **Sector Performance**: Real-time sector trends
+- **Macro Calendar**: Economic events and catalysts
+- **Market Sentiment**: AI-driven sentiment analysis
+
+### 🎨 User Experience
+- **Responsive Design**: Desktop, tablet, mobile optimized
+- **Dark/Light Mode**: Automatic theme switching
+- **Keyboard Navigation**: Full keyboard accessibility
+- **Offline Support**: Cached data for offline viewing
 
 ---
 
-*Powered by [SoSoValue](https://sosovalue.com) × [Anthropic Claude](https://anthropic.com)*
+## 🛠️ Technical Architecture
+
+### Frontend Stack
+- **Languages**: Vanilla HTML5, CSS3, JavaScript ES6+
+- **Architecture**: Single-page application (SPA)
+- **State Management**: Custom reactive state system
+- **Styling**: CSS custom properties, fluid typography
+- **Performance**: Virtual scrolling, lazy loading
+
+### Data Flow
+```
+SoSoValue API → CryptoDesk → Grok AI → User Interface
+     ↓               ↓            ↓
+Real-time data → Processing → Intelligence → Actionable insights
+```
+
+### Security & Performance
+- **API Keys**: Browser session storage only
+- **HTTPS Only**: All API communications encrypted
+- **Rate Limiting**: Intelligent request throttling
+- **Caching**: Strategic data caching for performance
+- **CORS**: Proper cross-origin resource sharing
+
+---
+
+## 🏆 Buildathon Progress
+
+### ✅ Wave 1 Complete 
+- [x] Live news feed integration
+- [x] AI-powered briefings
+- [x] Market data display
+- [x] Responsive design
+- [x] Single-file deployment
+- [x] Security implementation
+
+### 🔄 Wave 2 In Progress
+- [ ] Index tracking dashboard
+- [ ] ETF flow monitoring
+- [ ] Signal detection engine
+- [ ] Interactive charts
+- [ ] User preferences
+
+### ⏳ Wave 3 Planned
+- [ ] Trading execution via SoDEX
+- [ ] Portfolio management
+- [ ] Risk controls
+- [ ] Automated strategies
+
+---
+
+## 🤝 Contributing
+
+### Development Setup
+```bash
+# Fork and clone
+git clone https://github.com/your-username/cryptodesk-project.git
+cd cryptodesk-project
+
+# Start development server
+python3 -m http.server 8000
+
+# Make changes and test
+# Open http://localhost:8000/cryptodesk/index.html
+```
+
+### Code Style
+- **Indentation**: 2 spaces
+- **Comments**: JSDoc for functions
+- **Naming**: camelCase for variables, PascalCase for classes
+- **Security**: Never commit API keys or sensitive data
+
+---
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+
+***Powered by [SoSoValue](https://sosovalue.com) × [XAI Grok](https://x.ai)*

@@ -1,0 +1,649 @@
+/**
+ * CryptoDesk Advanced Animations
+ * Premium motion design for elite UX
+ * @version 2.0
+ */
+
+/* ═══════════════════════════════════════════════
+   KEYFRAME ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+/* Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Slide Up */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide Down */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide In From Left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide In From Right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale In */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Pulse Glow */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 8px var(--signal-live-glow);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 16px var(--signal-live-glow);
+  }
+}
+
+/* Shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Bounce Subtle */
+@keyframes bounceSubtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Rotate */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Wiggle */
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-2deg);
+  }
+  75% {
+    transform: rotate(2deg);
+  }
+}
+
+/* Expand Width */
+@keyframes expandWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Progress Bar */
+@keyframes progressBar {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Glow Pulse */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(26,58,107,0.15), 0 0 40px rgba(26,58,107,0.08);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(26,58,107,0.25), 0 0 60px rgba(26,58,107,0.15);
+  }
+}
+
+/* Ticker Scroll */
+@keyframes tickerScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   UTILITY ANIMATION CLASSES
+   ═══════════════════════════════════════════════ */
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-down {
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--paper-90) 25%,
+    var(--paper-80) 50%,
+    var(--paper-90) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.animate-bounce-subtle {
+  animation: bounceSubtle 2s ease-in-out infinite;
+}
+
+.animate-rotate {
+  animation: rotate 1s linear infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   STAGGERED ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.stagger-children > * {
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+
+/* ═══════════════════════════════════════════════
+   HOVER ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(26,58,107,0.2);
+}
+
+.hover-brighten {
+  transition: filter 0.2s ease;
+}
+
+.hover-brighten:hover {
+  filter: brightness(1.1);
+}
+
+/* ═══════════════════════════════════════════════
+   LOADING ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(245,240,232,0.3);
+  border-top-color: var(--paper-100);
+  border-radius: 50%;
+  animation: rotate 0.6s linear infinite;
+}
+
+.spinner-large {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+.dots-loading {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.dots-loading span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-50);
+  animation: bounceSubtle 1.4s ease-in-out infinite;
+}
+
+.dots-loading span:nth-child(1) { animation-delay: 0s; }
+.dots-loading span:nth-child(2) { animation-delay: 0.2s; }
+.dots-loading span:nth-child(3) { animation-delay: 0.4s; }
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: 3px;
+  background: var(--paper-90);
+  overflow: hidden;
+}
+
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent-primary),
+    transparent
+  );
+  animation: progressBar 1.5s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   ENTRANCE ANIMATIONS (Page Load)
+   ═══════════════════════════════════════════════ */
+
+.masthead {
+  animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-column {
+  animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feed-column {
+  animation: fadeIn 0.5s ease-out 0.2s both;
+}
+
+.intel-column {
+  animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════════
+   INTERACTIVE ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.news-card {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.news-card:hover {
+  transform: translateX(4px);
+}
+
+.news-card:active {
+  transform: translateX(2px) scale(0.99);
+}
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+.nav-item {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(10px);
+  width: 0;
+  height: 0;
+  border-left: 4px solid var(--signal-bear);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.nav-item.active::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* ═══════════════════════════════════════════════
+   MODAL ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.modal-backdrop {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-backdrop.open .modal {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-backdrop:not(.open) .modal {
+  animation: scaleOut 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   TOAST ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.toast {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toast.show {
+  animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════════
+   TICKER ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.ticker-chip {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ticker-chip:hover {
+  transform: scale(1.05);
+  background: var(--paper-85);
+}
+
+.ticker-price {
+  transition: color 0.3s ease;
+}
+
+.ticker-change {
+  transition: all 0.3s ease;
+}
+
+/* Price flash animation */
+@keyframes priceFlashUp {
+  0%, 100% {
+    background: transparent;
+  }
+  50% {
+    background: var(--signal-bull-bg);
+  }
+}
+
+@keyframes priceFlashDown {
+  0%, 100% {
+    background: transparent;
+  }
+  50% {
+    background: var(--signal-bear-bg);
+  }
+}
+
+.price-flash-up {
+  animation: priceFlashUp 0.6s ease-out;
+}
+
+.price-flash-down {
+  animation: priceFlashDown 0.6s ease-out;
+}
+
+/* ═══════════════════════════════════════════════
+   INTELLIGENCE PANEL ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.intel-block {
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.intel-block.ai-generated {
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+             glowPulse 3s ease-in-out infinite 0.4s;
+}
+
+.signal-item {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.signal-item:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ═══════════════════════════════════════════════
+   FEED TAB ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.feed-tab {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feed-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--signal-bear);
+  transform: scaleX(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feed-tab.active::after {
+  transform: scaleX(1);
+}
+
+.feed-tab:hover:not(.active) {
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════
+   STAT ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+.stat-value {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-value.updating {
+  animation: bounceSubtle 0.5s ease-out;
+}
+
+/* ═══════════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .animate-pulse-glow,
+  .animate-shimmer,
+  .animate-bounce-subtle,
+  .animate-rotate,
+  .animate-glow-pulse {
+    animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SCROLL ANIMATIONS (Intersection Observer)
+   ═══════════════════════════════════════════════ */
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════
+   FOCUS ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  animation: focusPulse 0.3s ease-out;
+}
+
+@keyframes focusPulse {
+  0% {
+    outline-width: 0;
+    outline-offset: 0;
+  }
+  100% {
+    outline-width: 2px;
+    outline-offset: 2px;
+  }
+}

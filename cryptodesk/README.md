@@ -1,6 +1,6 @@
 # CryptoDesk — AI-Powered On-Chain Finance Intelligence
 
-> 🚀 **Live Demo:** [https://your-username.github.io/cryptodesk-project](https://your-username.github.io/cryptodesk-project)
+> 🚀 **Live Demo:** [https://nanle-code.github.io/CryptoDesk/index.html](https://nanle-code.github.io/CryptoDesk/index.html)
 > 
 > A one-person crypto intelligence business powered by SoSoValue API × Grok AI
 > Built for SoSoValue Buildathon 2026 | 🏆 **Wave 1 Complete**
@@ -72,7 +72,7 @@ cryptodesk/
 ## 🚀 Quick Start & Deployment
 
 ### 🎯 Try It Now (No Installation Required)
-1. **Live Demo**: [Open CryptoDesk](https://your-username.github.io/cryptodesk-project/cryptodesk/index.html)
+1. **Live Demo**: [Open CryptoDesk](https://nanle-code.github.io/CryptoDesk/index.html)
 2. Click **⚙ Settings** (top-right)
 3. Enter your API keys:
    - **SoSoValue API Key**: Get from [SoSoValue Developer Portal](https://sosovalue.com)

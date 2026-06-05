@@ -18,18 +18,29 @@ const SOSO_TOOLS = [
 
 const SODEX_TOOLS = [
   { id: 'sodex-hub', label: 'SoDEX terminal', icon: '◎', action: 'tab:sodex' },
+  { id: 'order-audit', label: 'Order audit', icon: '📋' },
   { id: 'sodex', label: 'Orderbook panel', icon: '📊' },
 ];
 
 const AI_TOOLS = [
+  { id: 'demo', label: 'Judge demo', icon: '🏁', action: 'demo' },
   { id: 'workflow', label: 'Agent workflow', icon: '⟳' },
   { id: 'signals', label: 'Signal feed', icon: '⚡' },
+  { id: 'archive', label: 'Signal archive', icon: '📜' },
+  { id: 'opportunities', label: 'Opportunities', icon: '🔥' },
+  { id: 'copilot', label: 'Research copilot', icon: '🧠' },
+  { id: 'narratives', label: 'Narratives', icon: '↻' },
+  { id: 'watchlist', label: 'Watchlist', icon: '👁' },
+  { id: 'portfolio', label: 'Portfolio', icon: '📊' },
+  { id: 'ssi-index', label: 'SSI index', icon: '◆' },
+  { id: 'strategy', label: 'Strategy', icon: '📋' },
   { id: 'briefing', label: 'AI briefing', icon: '✦', action: 'briefing' },
 ];
 
 const PANEL_IDS = [
-  'workflow', 'signals', 'briefing', 'etf', 'macro', 'sectors', 'indices',
-  'treasuries', 'fundraising', 'sodex', 'sodex-hub', 'soso-hub', 'article',
+  'workflow', 'signals', 'archive', 'opportunities', 'copilot', 'narratives', 'watchlist', 'portfolio', 'ssi-index', 'strategy',
+  'briefing', 'etf', 'macro', 'sectors', 'indices',
+  'treasuries', 'fundraising', 'sodex', 'sodex-hub', 'order-audit', 'soso-hub', 'article',
 ];
 
 export default function Nav({
@@ -39,11 +50,14 @@ export default function Nav({
   panel,
   onPanel,
   onBriefing,
+  onStartDemo,
+  demoOpen,
   onMainTab,
   mainTab,
 }) {
   const handleTool = (t) => {
     if (t.action === 'briefing') onBriefing();
+    else if (t.action === 'demo') onStartDemo?.();
     else if (t.action === 'tab:soso') onMainTab?.('soso');
     else if (t.action === 'tab:sodex') onMainTab?.('sodex');
     else onPanel(t.id);
@@ -104,7 +118,7 @@ export default function Nav({
         <button
           key={t.id}
           type="button"
-          className={`nav-tool ${panel === t.id ? 'active' : ''}`}
+          className={`nav-tool ${(t.id === 'demo' && demoOpen) || panel === t.id ? 'active' : ''}`}
           onClick={() => handleTool(t)}
         >
           <span>{t.icon} {t.label}</span>

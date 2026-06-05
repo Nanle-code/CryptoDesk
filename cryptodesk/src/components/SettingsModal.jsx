@@ -31,8 +31,8 @@ export default function SettingsModal() {
             <input id="grok" className="form-input" type="password" value={form.grokKey} onChange={(e) => setForm({ ...form, grokKey: e.target.value })} placeholder="xai-…" />
           </div>
           <div className="form-row">
-            <label className="form-label" htmlFor="sodex">SoDEX key (optional)</label>
-            <input id="sodex" className="form-input" type="password" value={form.sodexKey} onChange={(e) => setForm({ ...form, sodexKey: e.target.value })} placeholder="Testnet preview" />
+            <label className="form-label" htmlFor="sodex">SoDEX API key name</label>
+            <input id="sodex" className="form-input" type="password" value={form.sodexKey} onChange={(e) => setForm({ ...form, sodexKey: e.target.value })} placeholder="X-API-Key header · signing scaffold" />
           </div>
           <div className="form-row">
             <label className="form-label" htmlFor="topic">Focus topic</label>

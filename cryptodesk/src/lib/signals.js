@@ -1,3 +1,5 @@
+import { attachExplainability } from './explainability';
+
 export function scoreArticle(item, index = -1) {
   const text = `${item.title || ''} ${(item.content || '').replace(/<[^>]+>/g, ' ')}`.toLowerCase();
   const bull = ['surge', 'rally', 'inflow', 'record', 'approval', 'adoption', 'launch', 'accumulation', 'etf', 'bullish'];
@@ -13,10 +15,19 @@ export function scoreArticle(item, index = -1) {
   else if (net <= -2) { sentiment = 'bearish'; strength = Math.min(5, Math.abs(net)); }
   const tickers = [...text.matchAll(/\$([A-Z]{2,5})\b/g)].map((m) => m[1]);
   const asset = tickers[0] || item.matched_currencies?.[0]?.name || 'MARKET';
+  const confidence = Math.min(95, 35 + Math.abs(net) * 15);
+  const impact = strength >= 4 ? 'high' : strength === 3 ? 'medium' : 'low';
+  const time_horizon = strength >= 4 ? 'medium' : 'short';
+  const recommendation = sentiment === 'bullish' ? 'Buy' : sentiment === 'bearish' ? 'Sell' : 'Hold';
   return {
     sentiment,
     strength,
+    confidence,
     asset,
+    affected_assets: tickers.length ? tickers : [asset],
+    impact,
+    time_horizon,
+    recommendation,
     title: item.title,
     reason: net > 0 ? `${b} bullish cues` : net < 0 ? `${d} bearish cues` : 'Low conviction',
     index,
@@ -28,6 +39,58 @@ export function buildSignals(news) {
     .map((item, i) => scoreArticle(item, i))
     .filter((s) => s.strength >= 2)
     .sort((a, b) => b.strength - a.strength);
+}
+
+function inferRisk(signal) {
+  if (signal.risk) return signal.risk;
+  if (signal.impact === 'high') {
+    return signal.sentiment === 'bullish' ? 'Medium' : 'High';
+  }
+  if (signal.impact === 'low') return 'Low';
+  return 'Medium';
+}
+
+function formatHorizon(h) {
+  if (!h) return 'short';
+  const s = String(h).toLowerCase();
+  if (s === 'short' || s === 'medium' || s === 'long') return s;
+  return s.includes('day') ? 'medium' : 'short';
+}
+
+function signalForOpportunity(signals, sourceIndex) {
+  return signals.find((s) => s.index === sourceIndex);
+}
+
+export function buildOpportunities(signals, news = []) {
+  return (signals || []).slice(0, 5).map((signal) => {
+    const base = {
+      asset: signal.affected_assets?.length ? signal.affected_assets.join(', ') : signal.asset,
+      recommendation: signal.recommendation || (signal.sentiment === 'bullish' ? 'Buy' : signal.sentiment === 'bearish' ? 'Sell' : 'Hold'),
+      confidence: signal.confidence ?? Math.min(95, 20 + signal.strength * 15),
+      risk: inferRisk(signal),
+      time_horizon: formatHorizon(signal.time_horizon) || (signal.strength >= 4 ? 'medium' : 'short'),
+      impact: signal.impact || (signal.strength >= 4 ? 'high' : signal.strength === 3 ? 'medium' : 'low'),
+      reason: signal.reason,
+      title: signal.title,
+      sourceIndex: signal.index,
+    };
+    const newsItem = news[signal.index];
+    return attachExplainability(base, newsItem, signal);
+  });
+}
+
+export function mergeOpportunityExplanations(opportunities, patches = {}) {
+  if (!patches || !Object.keys(patches).length) return opportunities;
+  return opportunities.map((opp) => {
+    const patch = patches[opp.sourceIndex];
+    if (!patch) return opp;
+    return {
+      ...opp,
+      why: patch.why?.length ? patch.why : opp.why,
+      risks: patch.risks?.length ? patch.risks : opp.risks,
+      explainSource: patch.explainSource || opp.explainSource,
+    };
+  });
 }
 
 export function sentimentPct(news) {

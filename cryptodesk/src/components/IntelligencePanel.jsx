@@ -5,6 +5,16 @@ import { useConfig } from '../context/ConfigContext';
 import { apiProof } from '../lib/api';
 import { fmtPct, fmtUsd, sectorLabel, stripHtml, timeAgo } from '../lib/format';
 import SignalList from './SignalList';
+import OpportunityList from './OpportunityList';
+import ResearchCopilot from './ResearchCopilot';
+import NarrativePanel from './NarrativePanel';
+import WatchlistPanel from './WatchlistPanel';
+import PortfolioPanel from './PortfolioPanel';
+import SSIIndexPanel from './SSIIndexPanel';
+import StrategyPanel from './StrategyPanel';
+import SignalArchivePanel from './SignalArchivePanel';
+import OrderAuditPanel from './OrderAuditPanel';
+import { assetToSodexSymbol } from '../lib/sodexSymbol';
 
 function Block({ label, children, proof }) {
   return (
@@ -34,6 +44,17 @@ export default function IntelligencePanel({
   panel,
   news,
   signals,
+  opportunities,
+  opportunityInsights,
+  committeeReviews,
+  insightLoadingIndex,
+  committeeLoadingIndex,
+  explainingOpps,
+  copilotQuery,
+  copilotAnswer,
+  copilotLoading,
+  onCopilotQueryChange,
+  onAskCopilot,
   stats,
   selectedArticle,
   briefingText,
@@ -42,8 +63,39 @@ export default function IntelligencePanel({
   analysisLoading,
   onAnalyzeArticle,
   onEnhanceSignals,
+  onExplainOpportunity,
+  onCommitteeReview,
+  watchlist,
+  watchlistAlerts,
+  watchlistTokenRows,
+  onWatchlistChange,
+  narrativeData,
+  narrativeLoading,
+  onNarrativeScan,
+  portfolioForm,
+  portfolioResult,
+  portfolioLoading,
+  onPortfolioFormChange,
+  onGeneratePortfolio,
+  ssiTheme,
+  ssiResult,
+  ssiLoading,
+  ssiSelectedTicker,
+  onSsiSelectedTickerChange,
+  onSsiThemeChange,
+  onBuildSSIIndex,
+  sosoKey,
+  strategyResults,
+  strategyLoadingIndex,
+  strategyActiveIndex,
+  onStrategyActiveIndexChange,
+  onGenerateStrategy,
   onSelectArticle,
   onOpenSoDEX,
+  signalArchive,
+  onClearArchive,
+  orderAudit,
+  onClearOrderAudit,
 }) {
   const { config, hasSoso, hasGrok } = useConfig();
   const [asyncData, setAsyncData] = useState(null);
@@ -51,7 +103,10 @@ export default function IntelligencePanel({
   const [asyncError, setAsyncError] = useState(null);
 
   useEffect(() => {
-    if (['default', 'article', 'briefing', 'signals', 'workflow', 'roadmap'].includes(panel)) {
+    if ([
+      'default', 'article', 'briefing', 'signals', 'archive', 'opportunities', 'copilot',
+      'narratives', 'watchlist', 'portfolio', 'ssi-index', 'strategy', 'workflow', 'roadmap', 'order-audit',
+    ].includes(panel)) {
       setAsyncData(null);
       return;
     }
@@ -125,6 +180,14 @@ export default function IntelligencePanel({
     article: 'Article',
     briefing: 'Intelligence Briefing',
     signals: 'Signal Feed',
+    archive: 'Signal Archive',
+    opportunities: 'Opportunity Engine',
+    copilot: 'Research Copilot',
+    narratives: 'Narrative Rotation',
+    watchlist: 'Watchlist Agent',
+    portfolio: 'Portfolio Agent',
+    'ssi-index': 'SSI Index Builder',
+    strategy: 'Strategy Generator',
     macro: 'Macro Calendar',
     sectors: 'Sector Spotlight',
     etf: 'ETF Flow Monitor',
@@ -133,6 +196,7 @@ export default function IntelligencePanel({
     fundraising: 'Fundraising',
     sodex: 'SoDEX Orderbook',
     'sodex-hub': 'SoDEX Markets',
+    'order-audit': 'Order Audit Log',
     workflow: 'Agent Workflow',
     roadmap: 'Product Roadmap',
   };
@@ -146,7 +210,16 @@ export default function IntelligencePanel({
     sodex: 'SoDEX Spot testnet',
     treasuries: 'GET /btc-treasuries',
     fundraising: 'GET /fundraising/projects',
-    signals: 'Lexicon · SoSoValue news',
+    signals: hasGrok ? 'Lexicon → Grok (auto top 5)' : 'Lexicon · add Grok for AI',
+    archive: 'sessionStorage · cd_signal_archive',
+    opportunities: 'Signals → Why/Risks → Committee → SoDEX',
+    copilot: 'Grok · feed-aware research',
+    narratives: 'Sector + headline rotation',
+    watchlist: 'Sentiment · narratives · alerts',
+    portfolio: 'Capital · risk · goal → allocation',
+    'ssi-index': 'SoSo SSI · live constituents + Grok',
+    strategy: 'Any opportunity → playbook',
+    'order-audit': 'sessionStorage · cd_order_audit',
     workflow: 'SoSoValue → Grok → SoDEX',
   };
 
@@ -189,42 +262,220 @@ export default function IntelligencePanel({
       <p className="report-p">Add API keys and click Generate Briefing.</p>
     );
   } else if (panel === 'signals') {
+    const topSignal = signals[0];
     body = (
       <>
         <Block label="⚡ Agentic signals">
+          <p className="report-p dim">
+            {hasGrok
+              ? 'Feed loads lexicon signals, then Grok auto-classifies the top 5 (sentiment, confidence, assets, horizon).'
+              : 'Keyword signals only — add Grok in Settings for AI classification on load.'}
+          </p>
           <SignalList signals={signals} onSelect={onSelectArticle} />
         </Block>
+        {topSignal && (
+          <Block label="🔥 Top opportunity">
+            <div className="opportunity-grid">
+              <div>
+                <span>Asset</span>
+                <strong>{topSignal.affected_assets?.length ? topSignal.affected_assets.join(', ') : topSignal.asset}</strong>
+              </div>
+              <div>
+                <span>Action</span>
+                <strong>{topSignal.recommendation || (topSignal.sentiment === 'bullish' ? 'Buy' : topSignal.sentiment === 'bearish' ? 'Sell' : 'Hold')}</strong>
+              </div>
+              <div>
+                <span>Confidence</span>
+                <strong>{topSignal.confidence ? `${topSignal.confidence}%` : `${topSignal.strength * 20}%`}</strong>
+              </div>
+              <div>
+                <span>Horizon</span>
+                <strong>{topSignal.time_horizon ? `${topSignal.time_horizon.charAt(0).toUpperCase() + topSignal.time_horizon.slice(1)}` : 'Medium'}</strong>
+              </div>
+            </div>
+            <p className="report-p">{topSignal.reason}</p>
+          </Block>
+        )}
         {hasGrok && (
           <button type="button" className="briefing-trigger full" onClick={onEnhanceSignals}>
-            ✦ AI-enhance top 3 signals
+            ✦ Re-classify top 5 signals
           </button>
         )}
-        {onOpenSoDEX && signals[0] && (
-          <button type="button" className="btn-ghost full" style={{ marginTop: 8, width: '100%' }} onClick={() => onOpenSoDEX(DEFAULT_SODEX_SYMBOL)}>
-            ◎ Preview top signal on SoDEX
+        {onOpenSoDEX && (opportunities?.[0] || signals[0]) && (
+          <button
+            type="button"
+            className="btn-ghost full"
+            style={{ marginTop: 8, width: '100%' }}
+            onClick={() => {
+              const opp = opportunities?.[0];
+              const sym = assetToSodexSymbol(opp?.asset || signals[0]?.asset);
+              onOpenSoDEX(sym, opp || null);
+            }}
+          >
+            ◎ Execution preview on SoDEX
           </button>
         )}
       </>
+    );
+  } else if (panel === 'archive') {
+    body = (
+      <Block label="📜 Session signal archive">
+        <SignalArchivePanel
+          archive={signalArchive}
+          onClear={onClearArchive}
+          onSelectEntry={onSelectArticle}
+        />
+      </Block>
+    );
+  } else if (panel === 'order-audit') {
+    body = (
+      <Block label="📋 Order audit log">
+        <OrderAuditPanel
+          audit={orderAudit}
+          onClear={onClearOrderAudit}
+          onOpenSoDEX={(sym) => onOpenSoDEX?.(sym, null)}
+        />
+      </Block>
+    );
+  } else if (panel === 'opportunities') {
+    body = (
+      <>
+        <Block label="🔥 Opportunity discovery">
+          <p className="report-p dim">
+            Every opportunity includes auto Why? and Risks bullets. With Grok, the top 3 are AI-enriched after classification.
+          </p>
+          {opportunities?.length ? (
+            <OpportunityList
+              opportunities={opportunities}
+              insights={opportunityInsights}
+              committeeReviews={committeeReviews}
+              insightLoadingIndex={insightLoadingIndex}
+              committeeLoadingIndex={committeeLoadingIndex}
+              explainingOpps={explainingOpps}
+              hasGrok={hasGrok}
+              onSelect={onSelectArticle}
+              onExplain={onExplainOpportunity}
+              onCommittee={onCommitteeReview}
+              onOpenSoDEX={onOpenSoDEX}
+              strategyResults={strategyResults}
+              strategyLoadingIndex={strategyLoadingIndex}
+              onGenerateStrategy={onGenerateStrategy}
+            />
+          ) : (
+            <p className="report-p dim">No strong opportunities detected yet. Refresh the news feed or connect SoSoValue.</p>
+          )}
+        </Block>
+        {hasGrok && opportunities?.[0] && (
+          <button type="button" className="briefing-trigger full" onClick={() => onCommitteeReview?.(opportunities[0])}>
+            ✦ Run investment committee on top opportunity
+          </button>
+        )}
+      </>
+    );
+  } else if (panel === 'copilot') {
+    body = (
+      <Block label="🧠 Research copilot">
+        <ResearchCopilot
+          hasGrok={hasGrok}
+          query={copilotQuery}
+          onQueryChange={onCopilotQueryChange}
+          answer={copilotAnswer}
+          loading={copilotLoading}
+          onAsk={onAskCopilot}
+        />
+      </Block>
+    );
+  } else if (panel === 'narratives') {
+    body = (
+      <Block label="↻ Narrative rotation">
+        <NarrativePanel
+          data={narrativeData}
+          loading={narrativeLoading}
+          hasGrok={hasGrok}
+          onScan={onNarrativeScan}
+        />
+      </Block>
+    );
+  } else if (panel === 'watchlist') {
+    body = (
+      <Block label="👁 Watchlist agent">
+        <WatchlistPanel
+          tokens={watchlist}
+          tokenRows={watchlistTokenRows}
+          alerts={watchlistAlerts}
+          narrativeData={narrativeData}
+          onChange={onWatchlistChange}
+          onScanNarratives={onNarrativeScan}
+          narrativeLoading={narrativeLoading}
+          hasGrok={hasGrok}
+        />
+      </Block>
+    );
+  } else if (panel === 'portfolio') {
+    body = (
+      <Block label="📊 Portfolio intelligence">
+        <PortfolioPanel
+          form={portfolioForm}
+          onFormChange={onPortfolioFormChange}
+          result={portfolioResult}
+          loading={portfolioLoading}
+          hasGrok={hasGrok}
+          onGenerate={onGeneratePortfolio}
+        />
+      </Block>
+    );
+  } else if (panel === 'ssi-index') {
+    body = (
+      <Block label="◆ SSI index builder">
+        <SSIIndexPanel
+          theme={ssiTheme}
+          onThemeChange={onSsiThemeChange}
+          result={ssiResult}
+          loading={ssiLoading}
+          hasGrok={hasGrok}
+          hasSoso={hasSoso}
+          sosoKey={sosoKey}
+          selectedTicker={ssiSelectedTicker}
+          onSelectedTickerChange={onSsiSelectedTickerChange}
+          onBuild={onBuildSSIIndex}
+        />
+      </Block>
+    );
+  } else if (panel === 'strategy') {
+    body = (
+      <Block label="📋 Strategy generator">
+        <StrategyPanel
+          opportunities={opportunities}
+          activeSourceIndex={strategyActiveIndex}
+          onSelectOpportunity={onStrategyActiveIndexChange}
+          results={strategyResults}
+          loadingIndex={strategyLoadingIndex}
+          hasGrok={hasGrok}
+          onGenerate={onGenerateStrategy}
+        />
+      </Block>
     );
   } else if (panel === 'workflow') {
     body = (
       <Block label="SoSoValue → SoDEX agent loop">
         <div className="workflow-steps vertical">
           <div className="wf-step done"><strong>SoSoValue</strong> — news, macro, sectors, ETF, indices, treasuries, fundraising</div>
-          <div className="wf-step done"><strong>ANALYZE</strong> — Grok briefing + lexicon on SoSoValue headlines</div>
-          <div className="wf-step done"><strong>SIGNAL</strong> — ranked opportunities</div>
-          <div className="wf-step done"><strong>SoDEX</strong> — orderbook, tickers, trades (public REST)</div>
-          <div className="wf-step dim"><strong>EXECUTE</strong> — signed orders on SoDEX (Wave 3)</div>
+          <div className="wf-step done"><strong>ANALYZE</strong> — Grok classify + research copilot</div>
+          <div className="wf-step done"><strong>SIGNAL</strong> — lexicon + AI confidence scoring · 📜 archive</div>
+          <div className="wf-step done"><strong>OPPORTUNITY</strong> — discovery, risk assess, investment committee</div>
+          <div className="wf-step done"><strong>AGENTS</strong> — narratives, watchlist, portfolio, SSI index, strategy</div>
+          <div className="wf-step done"><strong>SoDEX</strong> — klines + execution preview from opportunity card</div>
+          <div className="wf-step done"><strong>EXECUTE</strong> — EIP-712 scaffold · 📋 order audit log</div>
         </div>
-        <p className="report-p dim">12+ SoSoValue + 4 SoDEX endpoints per session</p>
+        <p className="report-p dim">12+ SoSoValue + 4 SoDEX endpoints · 🏁 <strong>Judge demo</strong> wizard in left nav</p>
       </Block>
     );
   } else if (panel === 'roadmap') {
     body = (
       <Block label="Buildathon roadmap">
         <p className="report-p"><strong>Wave 1</strong> — News + Grok briefings</p>
-        <p className="report-p"><strong>Wave 2</strong> — Signals, ETF, macro, sectors, indices, SoDEX preview (this build)</p>
-        <p className="report-p"><strong>Wave 3</strong> — Index designer + live SoDEX execution</p>
+        <p className="report-p"><strong>Wave 2</strong> — Signals, ETF, macro, sectors, indices, SoDEX preview</p>
+        <p className="report-p"><strong>Wave 3</strong> — Full agent stack: opportunities, committee, copilot, narratives, watchlist, portfolio, SSI index, strategy</p>
       </Block>
     );
   } else if (!hasSoso) {
@@ -389,7 +640,7 @@ export default function IntelligencePanel({
         <a href="https://sosovalue.com" target="_blank" rel="noreferrer">SoSoValue</a>
         <span>×</span>
         <a href="https://x.ai" target="_blank" rel="noreferrer">Grok</a>
-        <span className="wave-tag">Wave 2 · React</span>
+        <span className="wave-tag">Wave 3 · React</span>
       </div>
     </aside>
   );

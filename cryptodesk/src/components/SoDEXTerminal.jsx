@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 import { DEFAULT_SODEX_SYMBOL, sodexSpot } from '../api/sodex';
+import ExecutionPreviewCard from './ExecutionPreviewCard';
+import KlineChartPanel from './KlineChartPanel';
+import OrderExecutionScaffold from './OrderExecutionScaffold';
 import { apiProof } from '../lib/api';
+import { fetchDualKlines } from '../lib/klineData';
+import { estimateSlippageFromBook } from '../lib/executionPreview';
 import { fmtPrice } from '../lib/format';
 
-export default function SoDEXTerminal({ previewSymbol, onSymbolChange }) {
+export default function SoDEXTerminal({ previewSymbol, executionContext, onSymbolChange, sosoKey, sodexKey, onOrderAuditUpdate }) {
   const [symbol, setSymbol] = useState(previewSymbol || DEFAULT_SODEX_SYMBOL);
   const [symbols, setSymbols] = useState([]);
   const [tickers, setTickers] = useState([]);
@@ -12,6 +17,11 @@ export default function SoDEXTerminal({ previewSymbol, onSymbolChange }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastFetch, setLastFetch] = useState(null);
+  const [klineInterval, setKlineInterval] = useState('1h');
+  const [sodexKlines, setSodexKlines] = useState([]);
+  const [sosoKlines, setSosoKlines] = useState([]);
+  const [klineAsset, setKlineAsset] = useState('BTC');
+  const [klineLoading, setKlineLoading] = useState(false);
 
   useEffect(() => {
     if (previewSymbol) setSymbol(previewSymbol);
@@ -45,6 +55,30 @@ export default function SoDEXTerminal({ previewSymbol, onSymbolChange }) {
     return () => clearInterval(id);
   }, [symbol]);
 
+  useEffect(() => {
+    let cancelled = false;
+    setKlineLoading(true);
+    fetchDualKlines({ sosoKey, sodexSymbol: symbol, interval: klineInterval, limit: 48 })
+      .then(({ sodex, soso, asset }) => {
+        if (cancelled) return;
+        setSodexKlines(sodex);
+        setSosoKlines(soso);
+        setKlineAsset(asset);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSodexKlines([]);
+          setSosoKlines([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setKlineLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [symbol, klineInterval, sosoKey]);
+
   const selectSymbol = (sym) => {
     setSymbol(sym);
     onSymbolChange?.(sym);
@@ -54,12 +88,28 @@ export default function SoDEXTerminal({ previewSymbol, onSymbolChange }) {
     (t) => (t.symbol || t.s) === symbol
   );
 
+  const liveSlippage = book ? estimateSlippageFromBook(book) : null;
+  const preview = executionContext && executionContext.symbol === symbol ? executionContext : null;
+
   return (
     <div className="sodex-terminal">
+      {preview && (
+        <>
+          <ExecutionPreviewCard context={preview} liveSlippage={liveSlippage} />
+          <OrderExecutionScaffold
+            executionContext={preview}
+            symbol={symbol}
+            symbols={symbols}
+            book={book}
+            sodexKey={sodexKey}
+            onAuditUpdate={onOrderAuditUpdate}
+          />
+        </>
+      )}
       <div className="sodex-hero">
         <div>
           <h2>SoDEX Spot Terminal</h2>
-          <p>Live testnet market data — symbols, tickers, orderbook, trades. Public REST API (no key required).</p>
+          <p>Live testnet market data — klines, orderbook, trades. Public REST API (no key required).</p>
         </div>
         <span className="sodex-badge">testnet-gw.sodex.dev</span>
       </div>
@@ -86,6 +136,17 @@ export default function SoDEXTerminal({ previewSymbol, onSymbolChange }) {
           );
         })}
       </div>
+
+      <KlineChartPanel
+        symbol={symbol}
+        interval={klineInterval}
+        onIntervalChange={setKlineInterval}
+        sodexBars={sodexKlines}
+        sosoBars={sosoKlines}
+        loading={klineLoading}
+        sosoConnected={Boolean(sosoKey)}
+        asset={klineAsset}
+      />
 
       <div className="sodex-layout">
         <div className="sodex-panel">
@@ -168,20 +229,19 @@ export default function SoDEXTerminal({ previewSymbol, onSymbolChange }) {
         </div>
       </div>
 
-      <div className="sodex-execution-preview">
-        <h3>Execution preview (Wave 3)</h3>
-        <p>
-          Signal → review orderbook depth on SoDEX → confirm size → EIP-712 signed order via SoDEX Spot API.
-          CryptoDesk uses <strong>4 public SoDEX endpoints</strong> today; live placement ships Wave 3.
-        </p>
-        <div className="wf-step done">✓ Ingest (SoSoValue news + flows)</div>
-        <div className="wf-step done">✓ Analyze (Grok + signals)</div>
-        <div className="wf-step done">✓ Preview (SoDEX orderbook + trades)</div>
-        <div className="wf-step dim">○ Execute (signed POST /trade/orders)</div>
-      </div>
+      {!preview && (
+        <div className="sodex-execution-preview">
+          <h3>Execution preview</h3>
+          <p className="report-p dim">
+            Open an opportunity card → <strong>SoDEX</strong> to bind recommendation, allocation, and slippage to this terminal.
+          </p>
+          <div className="wf-step done">✓ Opportunity → Committee / Risk → SoDEX depth</div>
+          <div className="wf-step dim">○ Live POST requires SoDEX SDK signing (use scaffold above)</div>
+        </div>
+      )}
 
       {lastFetch && (
-        <p className="api-proof">{apiProof(`SoDEX testnet · ${symbol} · 4 endpoints`)}</p>
+        <p className="api-proof">{apiProof(`SoDEX testnet · ${symbol} · klines + 4 market endpoints`)}</p>
       )}
     </div>
   );

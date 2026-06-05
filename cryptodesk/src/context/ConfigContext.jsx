@@ -51,6 +51,7 @@ export function ConfigProvider({ children }) {
       showToast,
       hasSoso: Boolean(config.sosoKey),
       hasGrok: Boolean(config.grokKey),
+      hasSodex: Boolean(config.sodexKey),
     }),
     [config, settingsOpen, toast]
   );

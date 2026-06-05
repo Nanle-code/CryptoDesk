@@ -56,7 +56,14 @@ export default function MainWorkspace(props) {
       )}
       {tab === 'soso' && <SoSoDashboard apiKey={sosoKey} />}
       {tab === 'sodex' && (
-        <SoDEXTerminal previewSymbol={sodexSymbol} onSymbolChange={onSodexSymbol} />
+        <SoDEXTerminal
+          previewSymbol={props.sodexSymbol}
+          executionContext={props.executionContext}
+          onSymbolChange={props.onSodexSymbol}
+          sosoKey={sosoKey}
+          sodexKey={props.sodexKey}
+          onOrderAuditUpdate={props.onOrderAuditUpdate}
+        />
       )}
     </main>
   );

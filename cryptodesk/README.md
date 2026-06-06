@@ -38,14 +38,14 @@ Instead of acting like a standard news aggregator or signal bot, CryptoDesk work
 
 ```mermaid
 flowchart TD
-    A[Raw Market Data Ingestion] --> B{AI Sentiment Analysis}
-    B -- Bullish --> C[Rank as Opportunity]
-    B -- Bearish --> D[Risk Warning / Block]
-    B -- Neutral --> E[Contextual Monitoring]
+    A["Raw Market Data Ingestion"] --> B{"AI Sentiment Analysis"}
+    B -- "Bullish" --> C["Rank as Opportunity"]
+    B -- "Bearish" --> D["Risk Warning / Block"]
+    B -- "Neutral" --> E["Contextual Monitoring"]
 
-    C --> F[Investment Committee Review]
-    F --> G[Execution Preview on SoDEX]
-    G --> H[Final Order Preparation]
+    C --> F["Investment Committee Review"]
+    F --> G["Execution Preview on SoDEX"]
+    G --> H["Final Order Preparation"]
     
     D --> I[Signal Archive]
     E --> I
@@ -305,21 +305,21 @@ Full market data terminal connected to SoDEX testnet:
 
 ```mermaid
 flowchart TD
-    A[User Connects API Keys] --> B[Fetch SoSoValue News Feed]
-    B --> C[Grok Auto-Classifies Top 5 Signals]
+    A["User Connects API Keys"] --> B["Fetch SoSoValue News Feed"]
+    B --> C["Grok Auto-Classifies Top 5 Signals"]
     C --> D[Build Ranked Opportunities]
-    D --> E[Show Opportunity Cards with Explainability]
-    E --> F{User Action}
-    F --> G[Risk Assessment]
-    F --> H[Investment Committee Review]
-    F --> I[Strategy Playbook]
-    F --> J[Execute on SoDEX]
+    D --> E["Show Opportunity Cards with Explainability"]
+    E --> F{"User Action"}
+    F --> G["Risk Assessment"]
+    F --> H["Investment Committee Review"]
+    F --> I["Strategy Playbook"]
+    F --> J["Execute on SoDEX"]
     G --> H
     H --> J
     I --> J
-    J --> K[Execution Preview Card]
-    K --> L[EIP-712 Order Builder]
-    L --> M[Order Audit Trail]
+    J --> K["Execution Preview Card"]
+    K --> L["EIP-712 Order Builder"]
+    L --> M["Order Audit Trail"]
 ```
 
 ---
@@ -329,11 +329,11 @@ flowchart TD
 ```mermaid
 flowchart LR
     subgraph Frontend["Frontend — Vite + React"]
-        A[Masthead + Trust Bar]
-        B[News Feed]
-        C[Intelligence Panel]
-        D[SoDEX Terminal]
-        E[Settings Modal]
+        A["Masthead + Trust Bar"]
+        B["News Feed"]
+        C["Intelligence Panel"]
+        D["SoDEX Terminal"]
+        E["Settings Modal"]
     end
 
     subgraph AILayer["AI Layer — Grok 2"]
@@ -430,17 +430,17 @@ flowchart TD
     B --> D[Classified Signals]
     C --> D
 
-    D --> E[Opportunity Builder]
-    E --> F[Ranked Opportunity Cards]
+    D --> E["Opportunity Builder"]
+    E --> F["Ranked Opportunity Cards"]
 
-    F --> G[Explainability — Grok]
-    F --> H[Risk Assessment — Grok]
-    F --> I[Committee Review — Grok]
-    F --> J[Strategy Generator — Grok]
+    F --> G["Explainability — Grok"]
+    F --> H["Risk Assessment — Grok"]
+    F --> I["Committee Review — Grok"]
+    F --> J["Strategy Generator — Grok"]
 
     G --> F
     H --> F
-    I --> K[Execution Context Builder]
+    I --> K["Execution Context Builder"]
     J --> K
 
     K --> L[SoDEX Terminal]
@@ -470,16 +470,16 @@ flowchart TD
     A --> J[Strategy Generator]
     A --> K[Daily Briefing]
 
-    B --> L[Top 5 signals on every feed load]
-    C --> M[Why? + Risks bullets on every card]
-    D --> N[Risk drivers + conviction + mitigation]
-    E --> O[4-agent verdict + allocation + slippage]
-    F --> P[Free-form research Q&A]
-    G --> Q[Current vs emerging narrative rotation]
-    H --> R[Capital allocation from live feed]
-    I --> S[Custom index aligned to SSI Protocol]
-    J --> T[Trade playbook with exit criteria]
-    K --> U[Structured market report]
+    B --> L["Top 5 signals on every feed load"]
+    C --> M["Why? + Risks bullets on every card"]
+    D --> N["Risk drivers + conviction + mitigation"]
+    E --> O["4-agent verdict + allocation + slippage"]
+    F --> P["Free-form research Q&A"]
+    G --> Q["Current vs emerging narrative rotation"]
+    H --> R["Capital allocation from live feed"]
+    I --> S["Custom index aligned to SSI Protocol"]
+    J --> T["Trade playbook with exit criteria"]
+    K --> U["Structured market report"]
 ```
 
 ---
@@ -509,7 +509,7 @@ SoSoValue is the primary market data layer. All data is fetched client-side via 
 
 ```mermaid
 flowchart TD
-    A[SoSoValue OpenAPI v1] --> B["GET /news"]
+    A["SoSoValue OpenAPI v1"] --> B["GET /news"]
     A --> C["GET /news/hot"]
     A --> D["GET /news/featured"]
     A --> E["GET /currencies"]
@@ -526,14 +526,14 @@ flowchart TD
     A --> P["GET /macro/events"]
     A --> Q["GET /analyses"]
 
-    B --> R[News Feed]
-    E --> S[Masthead Tickers]
-    H --> T[Sector Spotlight + Narratives]
-    I --> U[ETF Flow Monitor]
-    K --> V[SSI Index Builder]
-    N --> W[BTC Treasuries Panel]
-    O --> X[Fundraising Panel]
-    P --> Y[Macro Events Panel]
+    B --> R["News Feed"]
+    E --> S["Masthead Tickers"]
+    H --> T["Sector Spotlight + Narratives"]
+    I --> U["ETF Flow Monitor"]
+    K --> V["SSI Index Builder"]
+    N --> W["BTC Treasuries Panel"]
+    O --> X["Fundraising Panel"]
+    P --> Y["Macro Events Panel"]
 ```
 
 ### SoSoValue Hub
@@ -561,59 +561,59 @@ SoDEX is the market microstructure and execution preview layer. Public market da
 
 ```mermaid
 flowchart TD
-    A[SoDEX Spot REST API v1] --> B[markets/symbols]
-    A --> C[markets/tickers]
-    A --> D[markets/bookTickers]
+    A["SoDEX Spot REST API v1"] --> B["markets/symbols"]
+    A --> C["markets/tickers"]
+    A --> D["markets/bookTickers"]
     A --> E["markets/{symbol}/orderbook"]
     A --> F["markets/{symbol}/klines"]
     A --> G["markets/{symbol}/trades"]
-    A --> H[markets/coins]
-    A --> I[markets/miniTickers]
+    A --> H["markets/coins"]
+    A --> I["markets/miniTickers"]
 
-    C --> J[Live Price Ticker — 15s refresh]
-    E --> K[Orderbook Depth Visualization]
-    F --> L[Kline Charts — 1H / 4H / 1D]
-    G --> M[Recent Trades Feed]
-    D --> N[Best Bid/Ask Spread]
+    C --> J["Live Price Ticker — 15s refresh"]
+    E --> K["Orderbook Depth Visualization"]
+    F --> L["Kline Charts — 1H / 4H / 1D"]
+    G --> M["Recent Trades Feed"]
+    D --> N["Best Bid/Ask Spread"]
 ```
 
 ### Execution Flow
 
 ```mermaid
 flowchart TD
-    A[Opportunity Card] --> B[Open on SoDEX]
-    B --> C[Build Execution Context]
-    C --> D[Execution Preview Card]
-    D --> E[Allocation + Slippage + Route]
-    E --> F{User Wants to Execute?}
-    F -- No --> G[Save to Signal Archive]
-    F -- Yes --> H[EIP-712 Order Builder]
-    H --> I[JSON Body Preview]
-    H --> J[Typed Data Preview]
-    H --> K[cURL Command Preview]
-    I --> L[Order Audit Trail]
+    A["Opportunity Card"] --> B["Open on SoDEX"]
+    B --> C["Build Execution Context"]
+    C --> D["Execution Preview Card"]
+    D --> E["Allocation + Slippage + Route"]
+    E --> F{"User Wants to Execute?"}
+    F -- "No" --> G["Save to Signal Archive"]
+    F -- "Yes" --> H["EIP-712 Order Builder"]
+    H --> I["JSON Body Preview"]
+    H --> J["Typed Data Preview"]
+    H --> K["cURL Command Preview"]
+    I --> L["Order Audit Trail"]
 ```
 
 ### SoDEX Usage Levels
 
 ```mermaid
 flowchart TD
-    A[SoDEX Integration] --> B[Level 1: Shipped]
-    A --> C[Level 2: Scaffold]
-    A --> D[Level 3: Future]
+    A["SoDEX Integration"] --> B["Level 1: Shipped"]
+    A --> C["Level 2: Scaffold"]
+    A --> D["Level 3: Future"]
 
-    B --> E[Public Market Data]
-    B --> F[Ticker + Orderbook + Klines + Trades]
-    B --> G[Execution Preview Card]
-    B --> H[Dual Kline Charts]
+    B --> E["Public Market Data"]
+    B --> F["Ticker + Orderbook + Klines + Trades"]
+    B --> G["Execution Preview Card"]
+    B --> H["Dual Kline Charts"]
 
-    C --> I[EIP-712 Order Builder]
-    C --> J[JSON + Typed Data + cURL]
-    C --> K[Order Audit Trail]
+    C --> I["EIP-712 Order Builder"]
+    C --> J["JSON + Typed Data + cURL"]
+    C --> K["Order Audit Trail"]
 
-    D --> L[Live Signed POST]
-    D --> M[SoDEX SDK Integration]
-    D --> N[Portfolio Execution]
+    D --> L["Live Signed POST"]
+    D --> M["SoDEX SDK Integration"]
+    D --> N["Portfolio Execution"]
 ```
 
 ---
@@ -627,8 +627,8 @@ CryptoDesk uses a hybrid classification approach:
 
 ```mermaid
 flowchart LR
-    A[News Article] --> B[Lexicon Scorer — Local]
-    A --> C[Grok Classifier — AI]
+    A["News Article"] --> B["Lexicon Scorer — Local"]
+    A --> C["Grok Classifier — AI"]
 
     B --> D[Base Sentiment + Strength]
     C --> E[Full Classification Object]
@@ -650,31 +650,31 @@ CryptoDesk has a three-column terminal layout.
 
 ```mermaid
 flowchart TD
-    A[CryptoDesk Terminal] --> B[Left — Navigation]
-    A --> C[Center — Main Workspace]
-    A --> D[Right — Intelligence Panel]
+    A["CryptoDesk Terminal"] --> B["Left — Navigation"]
+    A --> C["Center — Main Workspace"]
+    A --> D["Right — Intelligence Panel"]
 
-    B --> E[Category Filters]
-    B --> F[SoSoValue Data Sections]
-    B --> G[Panel Shortcuts]
-    B --> H[Judge Demo Button]
+    B --> E["Category Filters"]
+    B --> F["SoSoValue Data Sections"]
+    B --> G["Panel Shortcuts"]
+    B --> H["Judge Demo Button"]
 
-    C --> I[News Feed Tab]
-    C --> J[SoSoValue Hub Tab]
-    C --> K[SoDEX Terminal Tab]
+    C --> I["News Feed Tab"]
+    C --> J["SoSoValue Hub Tab"]
+    C --> K["SoDEX Terminal Tab"]
 
-    D --> L[Signals Panel]
-    D --> M[Opportunities Panel]
-    D --> N[Article Analysis Panel]
-    D --> O[Briefing Panel]
-    D --> P[Research Copilot Panel]
-    D --> Q[Narratives Panel]
-    D --> R[Portfolio Panel]
-    D --> S[SSI Index Panel]
-    D --> T[Strategy Panel]
-    D --> U[Watchlist Panel]
-    D --> V[Signal Archive Panel]
-    D --> W[Order Audit Panel]
+    D --> L["Signals Panel"]
+    D --> M["Opportunities Panel"]
+    D --> N["Article Analysis Panel"]
+    D --> O["Briefing Panel"]
+    D --> P["Research Copilot Panel"]
+    D --> Q["Narratives Panel"]
+    D --> R["Portfolio Panel"]
+    D --> S["SSI Index Panel"]
+    D --> T["Strategy Panel"]
+    D --> U["Watchlist Panel"]
+    D --> V["Signal Archive Panel"]
+    D --> W["Order Audit Panel"]
 ```
 
 ### Navigation Panels
@@ -737,12 +737,12 @@ Every visible button must work.
 
 ```mermaid
 flowchart TD
-    A[Button Click] --> B{Does Feature Exist?}
-    B -- Yes --> C[Run Real Action]
-    B -- No --> D[Disable Button or Remove It]
-    C --> E{Success?}
-    E -- Yes --> F[Show Toast Notification]
-    E -- No --> G[Show Error Toast]
+    A["Button Click"] --> B{"Does Feature Exist?"}
+    B -- "Yes" --> C["Run Real Action"]
+    B -- "No" --> D["Disable Button or Remove It"]
+    C --> E{"Success?"}
+    E -- "Yes" --> F["Show Toast Notification"]
+    E -- "No" --> G["Show Error Toast"]
 ```
 
 ### Key Buttons
@@ -1002,21 +1002,21 @@ CryptoDesk follows these rules:
 
 ```mermaid
 flowchart TD
-    A[API Request] --> B{Success?}
-    B -- Yes --> C[Process + Display Data]
-    B -- No --> D{Error Type}
+    A["API Request"] --> B{"Success?"}
+    B -- "Yes" --> C["Process + Display Data"]
+    B -- "No" --> D{"Error Type"}
 
-    D --> E[Missing API Key]
-    D --> F[API Timeout]
-    D --> G[Rate Limited]
-    D --> H[Invalid Response]
-    D --> I[Network Error]
+    D --> E["Missing API Key"]
+    D --> F["API Timeout"]
+    D --> G["Rate Limited"]
+    D --> H["Invalid Response"]
+    D --> I["Network Error"]
 
-    E --> J[Toast: Add key in Settings]
-    F --> K[Toast: Try again later]
-    G --> L[Toast: Rate limited]
-    H --> M[Toast: Parse error]
-    I --> N[Toast: Network error]
+    E --> J["Toast: Add key in Settings"]
+    F --> K["Toast: Try again later"]
+    G --> L["Toast: Rate limited"]
+    H --> M["Toast: Parse error"]
+    I --> N["Toast: Network error"]
 ```
 
 ---
@@ -1055,17 +1055,17 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[CryptoDesk Business Model] --> B[Free Terminal]
-    A --> C[Pro Researcher]
-    A --> D[Fund Manager]
-    A --> E[Community Plan]
-    A --> F[API Access]
+    A["CryptoDesk Business Model"] --> B["Free Terminal"]
+    A --> C["Pro Researcher"]
+    A --> D["Fund Manager"]
+    A --> E["Community Plan"]
+    A --> F["API Access"]
 
-    B --> G[Basic news + lexicon signals]
-    C --> H[Full AI agent suite + SoDEX execution]
-    D --> I[Portfolio management + committee reviews]
-    E --> J[Signal group integrations]
-    F --> K[Programmatic intelligence API]
+    B --> G["Basic news + lexicon signals"]
+    C --> H["Full AI agent suite + SoDEX execution"]
+    D --> I["Portfolio management + committee reviews"]
+    E --> J["Signal group integrations"]
+    F --> K["Programmatic intelligence API"]
 ```
 
 ### Pricing Plan Ideas
@@ -1083,29 +1083,25 @@ flowchart TD
 ## Roadmap
 
 ```mermaid
-timeline
+gantt
     title CryptoDesk Roadmap
-
-    section Wave 1–3 — Shipped
-      News Feed : SoSoValue live data
-      AI Signals : Grok auto-classification
-      Opportunities : Explainability engine
-      Committee : Multi-agent review
-      SoDEX Terminal : Market data + order builder
-      Portfolio + SSI : AI portfolio + index builder
-      Demo Wizard : Judge walkthrough
+    dateFormat  YYYY-MM-DD
+    axisFormat %m-%d
+    
+    section Shipped
+    News Feed :done, 2026-06-01, 1d
+    AI Signals :done, 2026-06-02, 1d
+    Opportunities :done, 2026-06-03, 1d
+    Committee :done, 2026-06-03, 1d
+    SoDEX Terminal :done, 2026-06-04, 1d
+    Portfolio + SSI :done, 2026-06-05, 1d
+    Demo Wizard :done, 2026-06-05, 1d
 
     section Next
-      Live Execution : Signed SoDEX orders
-      Push Alerts : Watchlist notifications
-      PDF Reports : Exportable intelligence reports
-      Multi-Model : Claude + GPT support
-
-    section Future
-      Wallet Accounts : Persistent user profiles
-      Team Workspaces : Shared research + signals
-      Mobile App : React Native terminal
-      Plugin System : Community agent marketplace
+    Live Execution :active, 2026-06-06, 7d
+    Push Alerts :active, 2026-06-06, 7d
+    PDF Reports :active, 2026-06-06, 7d
+    Multi-Model :active, 2026-06-06, 7d
 ```
 
 ---

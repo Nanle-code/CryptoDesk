@@ -5,6 +5,7 @@ const ConfigContext = createContext(null);
 const STORAGE = {
   soso: 'cd_soso',
   grok: 'cd_grok',
+  grokModel: 'cd_grok_model',
   sodex: 'cd_sodex',
   topic: 'cd_topic',
   dark: 'cd_dark',
@@ -14,6 +15,7 @@ export function ConfigProvider({ children }) {
   const [config, setConfig] = useState(() => ({
     sosoKey: sessionStorage.getItem(STORAGE.soso) || '',
     grokKey: sessionStorage.getItem(STORAGE.grok) || '',
+    grokModel: sessionStorage.getItem(STORAGE.grokModel) || 'grok-4.3',
     sodexKey: sessionStorage.getItem(STORAGE.sodex) || '',
     topic: sessionStorage.getItem(STORAGE.topic) || '',
     darkMode: sessionStorage.getItem(STORAGE.dark) !== 'false',
@@ -34,6 +36,7 @@ export function ConfigProvider({ children }) {
     setConfig(next);
     sessionStorage.setItem(STORAGE.soso, next.sosoKey);
     sessionStorage.setItem(STORAGE.grok, next.grokKey);
+    sessionStorage.setItem(STORAGE.grokModel, next.grokModel);
     sessionStorage.setItem(STORAGE.sodex, next.sodexKey);
     sessionStorage.setItem(STORAGE.topic, next.topic);
     sessionStorage.setItem(STORAGE.dark, String(next.darkMode));

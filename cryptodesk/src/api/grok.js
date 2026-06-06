@@ -3,7 +3,6 @@ import { formatReferenceForGrok } from '../lib/ssiIndex';
 import { ensureString } from '../lib/format';
 
 const GROK_BASE = 'https://api.x.ai/v1/chat/completions';
-const GROK_MODEL = 'grok-2';
 
 function feedHeadlines(newsItems, limit = 18, contentLen = 120) {
   return (newsItems || []).slice(0, limit).map((n) => {
@@ -16,6 +15,7 @@ function feedHeadlines(newsItems, limit = 18, contentLen = 120) {
 export class GrokAPI {
   constructor(apiKey) {
     this.apiKey = apiKey;
+    this.modelId = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('cd_grok_model') || 'grok-4.3' : 'grok-4.3';
   }
 
   async complete(systemPrompt, userPrompt, maxTokens = 1000) {
@@ -29,7 +29,7 @@ export class GrokAPI {
         Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify({
-        model: GROK_MODEL,
+        model: this.modelId,
         max_tokens: maxTokens,
         temperature: 0,
         messages: [
@@ -42,11 +42,17 @@ export class GrokAPI {
     if (!res.ok) {
       let msg = `Grok API ${res.status}`;
       try {
-        const err = await res.json();
-        if (err?.error?.message) msg = `Grok: ${err.error.message}`;
-        else if (err?.message) msg = `Grok: ${err.message}`;
+        const rawBody = await res.text();
+        msg += `: ${rawBody.slice(0, 200)}`; // add raw text up to 200 chars
+        try {
+          const err = JSON.parse(rawBody);
+          if (err?.error?.message) msg = `Grok: ${err.error.message}`;
+          else if (err?.message) msg = `Grok: ${err.message}`;
+        } catch {
+          // keep the raw text appended
+        }
       } catch {
-        /* fallback to status code */
+        // fallback
       }
       throw new Error(msg);
     }

@@ -11,8 +11,24 @@ export function timeAgo(ts) {
 
 export function ensureString(v, def = '') {
   if (v == null) return def;
-  if (typeof v === 'string') return v;
-  if (typeof v === 'object') return v.en || v.localized_name || v.name || JSON.stringify(v);
+  
+  let obj = v;
+  if (typeof v === 'string') {
+    if (v.trim().startsWith('{')) {
+      try {
+        obj = JSON.parse(v);
+      } catch {
+        return v;
+      }
+    } else {
+      return v;
+    }
+  }
+
+  if (typeof obj === 'object' && obj !== null) {
+    return obj.en || obj.localized_name || obj.name || JSON.stringify(obj);
+  }
+  
   return String(v);
 }
 

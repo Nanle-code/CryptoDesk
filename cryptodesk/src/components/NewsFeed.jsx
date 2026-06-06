@@ -38,7 +38,7 @@ export default function NewsFeed({
                 <div className="news-meta">
                   <span className="news-source">{item.nick_name || item.author || 'Source'}</span>
                   <span className={`news-cat ${CAT_CLS[cat] || 'cat-breaking'}`}>{CAT[cat] || 'News'}</span>
-                  {item.is_blue_verified && <span className="news-cat cat-official">✓</span>}
+                  {item.is_blue_verified && <span className="news-cat cat-official"></span>}
                   <span className="news-time">{timeAgo(item.release_time)}</span>
                 </div>
                 <div className="news-title">{item.title || 'Untitled'}</div>
@@ -63,7 +63,7 @@ export default function NewsFeed({
         <div className="feed-tabs">
           {['latest', 'hot', 'featured'].map((t) => (
             <button key={t} type="button" className={`feed-tab ${tab === t ? 'active' : ''}`} onClick={() => onTab(t)}>
-              {t === 'hot' ? '🔥 Hot' : t === 'featured' ? '★ Featured' : 'Latest'}
+              {t === 'hot' ? ' Hot' : t === 'featured' ? ' Featured' : 'Latest'}
             </button>
           ))}
         </div>

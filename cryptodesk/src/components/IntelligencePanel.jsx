@@ -230,7 +230,7 @@ export default function IntelligencePanel({
     const url = selectedArticle.source_link || selectedArticle.url || selectedArticle.link;
     body = (
       <>
-        <Block label="📰 Article">
+        <Block label=" Article">
           <h3 className="report-title">{selectedArticle.title}</h3>
           <p className="report-byline">{selectedArticle.nick_name} · {timeAgo(selectedArticle.release_time)}</p>
           <p className="report-p">{plain}</p>
@@ -240,11 +240,11 @@ export default function IntelligencePanel({
         </Block>
         {hasGrok && (
           <button type="button" className="briefing-trigger full" disabled={analysisLoading} onClick={onAnalyzeArticle}>
-            {analysisLoading ? 'Analyzing…' : '✦ Analyze with Grok'}
+            {analysisLoading ? 'Analyzing…' : ' Analyze with Grok'}
           </button>
         )}
         {articleAnalysis && (
-          <Block label="✦ Grok analysis">
+          <Block label=" Grok analysis">
             <p className="report-p" style={{ whiteSpace: 'pre-wrap' }}>{articleAnalysis}</p>
           </Block>
         )}
@@ -254,7 +254,7 @@ export default function IntelligencePanel({
     body = briefingLoading ? (
       <Loading />
     ) : briefingText ? (
-      <Block label="✦ Daily Intelligence">
+      <Block label=" Daily Intelligence">
         <p className="report-p" style={{ whiteSpace: 'pre-wrap' }}>{briefingText}</p>
         <SignalList signals={signals.slice(0, 3)} onSelect={onSelectArticle} />
       </Block>
@@ -265,7 +265,7 @@ export default function IntelligencePanel({
     const topSignal = signals[0];
     body = (
       <>
-        <Block label="⚡ Agentic signals">
+        <Block label=" Agentic signals">
           <p className="report-p dim">
             {hasGrok
               ? 'Feed loads lexicon signals, then Grok auto-classifies the top 5 (sentiment, confidence, assets, horizon).'
@@ -274,7 +274,7 @@ export default function IntelligencePanel({
           <SignalList signals={signals} onSelect={onSelectArticle} />
         </Block>
         {topSignal && (
-          <Block label="🔥 Top opportunity">
+          <Block label=" Top opportunity">
             <div className="opportunity-grid">
               <div>
                 <span>Asset</span>
@@ -298,7 +298,7 @@ export default function IntelligencePanel({
         )}
         {hasGrok && (
           <button type="button" className="briefing-trigger full" onClick={onEnhanceSignals}>
-            ✦ Re-classify top 5 signals
+             Re-classify top 5 signals
           </button>
         )}
         {onOpenSoDEX && (opportunities?.[0] || signals[0]) && (
@@ -319,7 +319,7 @@ export default function IntelligencePanel({
     );
   } else if (panel === 'archive') {
     body = (
-      <Block label="📜 Session signal archive">
+      <Block label=" Session signal archive">
         <SignalArchivePanel
           archive={signalArchive}
           onClear={onClearArchive}
@@ -329,7 +329,7 @@ export default function IntelligencePanel({
     );
   } else if (panel === 'order-audit') {
     body = (
-      <Block label="📋 Order audit log">
+      <Block label=" Order audit log">
         <OrderAuditPanel
           audit={orderAudit}
           onClear={onClearOrderAudit}
@@ -340,7 +340,7 @@ export default function IntelligencePanel({
   } else if (panel === 'opportunities') {
     body = (
       <>
-        <Block label="🔥 Opportunity discovery">
+        <Block label=" Opportunity discovery">
           <p className="report-p dim">
             Every opportunity includes auto Why? and Risks bullets. With Grok, the top 3 are AI-enriched after classification.
           </p>
@@ -367,14 +367,14 @@ export default function IntelligencePanel({
         </Block>
         {hasGrok && opportunities?.[0] && (
           <button type="button" className="briefing-trigger full" onClick={() => onCommitteeReview?.(opportunities[0])}>
-            ✦ Run investment committee on top opportunity
+             Run investment committee on top opportunity
           </button>
         )}
       </>
     );
   } else if (panel === 'copilot') {
     body = (
-      <Block label="🧠 Research copilot">
+      <Block label=" Research copilot">
         <ResearchCopilot
           hasGrok={hasGrok}
           query={copilotQuery}
@@ -398,7 +398,7 @@ export default function IntelligencePanel({
     );
   } else if (panel === 'watchlist') {
     body = (
-      <Block label="👁 Watchlist agent">
+      <Block label=" Watchlist agent">
         <WatchlistPanel
           tokens={watchlist}
           tokenRows={watchlistTokenRows}
@@ -413,7 +413,7 @@ export default function IntelligencePanel({
     );
   } else if (panel === 'portfolio') {
     body = (
-      <Block label="📊 Portfolio intelligence">
+      <Block label=" Portfolio intelligence">
         <PortfolioPanel
           form={portfolioForm}
           onFormChange={onPortfolioFormChange}
@@ -443,7 +443,7 @@ export default function IntelligencePanel({
     );
   } else if (panel === 'strategy') {
     body = (
-      <Block label="📋 Strategy generator">
+      <Block label=" Strategy generator">
         <StrategyPanel
           opportunities={opportunities}
           activeSourceIndex={strategyActiveIndex}
@@ -461,13 +461,13 @@ export default function IntelligencePanel({
         <div className="workflow-steps vertical">
           <div className="wf-step done"><strong>SoSoValue</strong> — news, macro, sectors, ETF, indices, treasuries, fundraising</div>
           <div className="wf-step done"><strong>ANALYZE</strong> — Grok classify + research copilot</div>
-          <div className="wf-step done"><strong>SIGNAL</strong> — lexicon + AI confidence scoring · 📜 archive</div>
+          <div className="wf-step done"><strong>SIGNAL</strong> — lexicon + AI confidence scoring ·  archive</div>
           <div className="wf-step done"><strong>OPPORTUNITY</strong> — discovery, risk assess, investment committee</div>
           <div className="wf-step done"><strong>AGENTS</strong> — narratives, watchlist, portfolio, SSI index, strategy</div>
           <div className="wf-step done"><strong>SoDEX</strong> — klines + execution preview from opportunity card</div>
-          <div className="wf-step done"><strong>EXECUTE</strong> — EIP-712 scaffold · 📋 order audit log</div>
+          <div className="wf-step done"><strong>EXECUTE</strong> — EIP-712 scaffold ·  order audit log</div>
         </div>
-        <p className="report-p dim">12+ SoSoValue + 4 SoDEX endpoints · 🏁 <strong>Judge demo</strong> wizard in left nav</p>
+        <p className="report-p dim">12+ SoSoValue + 4 SoDEX endpoints ·  <strong>Judge demo</strong> wizard in left nav</p>
       </Block>
     );
   } else if (panel === 'roadmap') {
@@ -481,7 +481,7 @@ export default function IntelligencePanel({
   } else if (!hasSoso) {
     body = (
       <div className="intel-empty">
-        <div className="intel-empty-glyph">✦</div>
+        <div className="intel-empty-glyph"></div>
         <p>Configure SoSoValue API in Settings.</p>
         <p className="dim">Demo mode uses sample news.</p>
       </div>
@@ -515,7 +515,7 @@ export default function IntelligencePanel({
           const up = chg >= 0;
           return (
             <div key={s.name + (s.spotlight ? 's' : '')} className="sector-item">
-              <span className="sector-name">{sectorLabel(s.name)}{s.spotlight ? ' ★' : ''}</span>
+              <span className="sector-name">{sectorLabel(s.name)}{s.spotlight ? ' ' : ''}</span>
               <span className="sector-bar-wrap">
                 <span className="sector-bar" style={{ width: `${Math.round((Math.abs(chg) / max) * 100)}%`, background: up ? 'var(--bull)' : 'var(--bear)' }} />
               </span>
@@ -612,7 +612,7 @@ export default function IntelligencePanel({
   } else {
     body = (
       <div className="intel-empty">
-        <div className="intel-empty-glyph">✦</div>
+        <div className="intel-empty-glyph"></div>
         <p>Select a tool from the left, or click a headline.</p>
         {!hasSoso && <p className="dim">Demo mode active.</p>}
       </div>

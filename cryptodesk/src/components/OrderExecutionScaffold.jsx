@@ -237,7 +237,7 @@ export default function OrderExecutionScaffold({
 
       {auditCount > 0 && (
         <p className="api-proof">
-          Logged to order audit · left nav <strong>📋 Order audit</strong> · {auditCount} this session
+          Logged to order audit · left nav <strong> Order audit</strong> · {auditCount} this session
         </p>
       )}
     </div>

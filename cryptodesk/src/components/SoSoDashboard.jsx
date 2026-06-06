@@ -129,7 +129,7 @@ export default function SoSoDashboard({ apiKey }) {
           ))}
         </Card>
 
-        <Card title="🏦 BTC treasuries" proof="GET /btc-treasuries">
+        <Card title=" BTC treasuries" proof="GET /btc-treasuries">
           {data.treasuries.slice(0, 6).map((t, i) => (
             <div key={i} className="hub-row">
               <span>{t.ticker || t.name || t.company_name}</span>
@@ -138,7 +138,7 @@ export default function SoSoDashboard({ apiKey }) {
           ))}
         </Card>
 
-        <Card title="🚀 Fundraising" proof="GET /fundraising/projects">
+        <Card title=" Fundraising" proof="GET /fundraising/projects">
           {data.fundraising.slice(0, 5).map((p, i) => (
             <div key={i} className="hub-row">
               <span>{(p.name || p.project_name || '').slice(0, 28)}</span>
@@ -156,7 +156,7 @@ export default function SoSoDashboard({ apiKey }) {
           ))}
         </Card>
 
-        <Card title="📋 ETF list" proof="GET /etfs">
+        <Card title=" ETF list" proof="GET /etfs">
           {data.etfs.slice(0, 5).map((e, i) => (
             <div key={i} className="hub-row">
               <span>{e.ticker || e.symbol}</span>

@@ -3,17 +3,28 @@
  * https://sodex.com/documentation/api/rest-v1
  */
 const SPOT_TESTNET = 'https://testnet-gw.sodex.dev/api/v1/spot';
+const PERPS_TESTNET = 'https://testnet-gw.sodex.dev/api/v1/perps';
+
 const SPOT_MAINNET = 'https://mainnet-gw.sodex.dev/api/v1/spot';
+const PERPS_MAINNET = 'https://mainnet-gw.sodex.dev/api/v1/perps';
 
 export const DEFAULT_SODEX_SYMBOL = 'vBTC_vUSDC';
 
-function getBase(testnet = true) {
+function getBase(testnet = true, perps = false) {
+  if (perps) return testnet ? PERPS_TESTNET : PERPS_MAINNET;
   return testnet ? SPOT_TESTNET : SPOT_MAINNET;
 }
 
-async function sodexGet(path, testnet = true) {
-  const res = await fetch(`${getBase(testnet)}${path}`, {
-    headers: { Accept: 'application/json' },
+async function sodexGet(path, testnet = true, perps = false) {
+  const config = JSON.parse(sessionStorage.getItem('cd_config') || '{}');
+  const headers = { Accept: 'application/json' };
+  
+  if (config.sodexKey) {
+    headers['X-API-Key'] = config.sodexKey;
+  }
+
+  const res = await fetch(`${getBase(testnet, perps)}${path}`, {
+    headers,
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json?.error?.message || json?.message || `SoDEX ${res.status}`);

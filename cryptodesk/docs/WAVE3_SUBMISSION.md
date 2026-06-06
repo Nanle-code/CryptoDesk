@@ -18,21 +18,21 @@ Solo crypto researchers and retail traders who need a full data-to-decision loop
 
 ## Core user workflow (Wave 3 judge demo)
 
-**Fastest path:** Left nav → **🏁 Judge demo** → **Run this step** through all 7 steps.
+**Fastest path:** Left nav → ** Judge demo** → **Run this step** through all 7 steps.
 
 Manual equivalent:
 
 1. **Settings** → SoSoValue + Grok keys → **Connect**
 2. **News feed** loads → `GET /news` (Network tab: `code: 0`)
 3. Grok auto-classifies **top 5** signals (trust bar: *Grok classifying…*)
-4. **🔥 Opportunities** → cards with **Why?** / **Risks** bullets
+4. ** Opportunities** → cards with **Why?** / **Risks** bullets
 5. **Committee** on top opportunity → Analyst · Risk · Macro · Execution
 6. **Portfolio agent** → allocation sleeves from live feed
 7. **Execution preview** → SoDEX tab + bound preview card (allocation, slippage, route)
 8. **Price charts** → dual klines (SoDEX testnet + SoSoValue) with 1H / 4H / 1D intervals
 9. **Prepare signed order** on SoDEX tab → EIP-712 JSON + curl (no live POST)
-10. **📋 Order audit** → left nav after preparing an order
-11. **📜 Signal archive** → session history (export JSON)
+10. ** Order audit** → left nav after preparing an order
+11. ** Signal archive** → session history (export JSON)
 
 ## SoSoValue APIs integrated
 
@@ -92,8 +92,8 @@ Manual equivalent:
 2. Trust bar shows **Lexicon + Grok** after classify completes
 3. Opportunity cards show **Why?** and **Risks** without clicking Risk assess first
 4. SoDEX tab shows **execution preview card** when opened from an opportunity
-5. **🏁 Judge demo** walks panels 1→7 with toast + panel navigation
-6. **📜 Signal archive** grows as feed refreshes; Export JSON works
+5. ** Judge demo** walks panels 1→7 with toast + panel navigation
+6. ** Signal archive** grows as feed refreshes; Export JSON works
 7. **SoDEX tab** → dual kline charts load from `…/klines` (Network tab)
 
 ---

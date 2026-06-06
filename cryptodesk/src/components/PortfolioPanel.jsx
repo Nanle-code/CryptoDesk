@@ -37,7 +37,7 @@ export default function PortfolioPanel({
         </label>
       </div>
       <button type="button" className="briefing-trigger full" disabled={!hasGrok || loading} onClick={onGenerate}>
-        {loading ? 'Building portfolio…' : '📊 Generate portfolio'}
+        {loading ? 'Building portfolio…' : ' Generate portfolio'}
       </button>
       {result && (
         <>

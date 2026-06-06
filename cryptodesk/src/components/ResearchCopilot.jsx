@@ -45,7 +45,7 @@ export default function ResearchCopilot({
         disabled={!hasGrok || loading || !query.trim()}
         onClick={() => submit()}
       >
-        {loading ? 'Researching…' : '🧠 Run research query'}
+        {loading ? 'Researching…' : ' Run research query'}
       </button>
       {answer && (
         <div className="copilot-answer">

@@ -8,7 +8,7 @@ CryptoDesk evolves from a **crypto news agency** (Wave 1) into a **one-person on
 
 ## Wave 1 — News Agency  
 **May 1–12 · $3,000 USDC**  
-**Status: ✅ Submission Ready**
+**Status:  Submission Ready**
 
 ### What it does
 A one-person crypto intelligence desk powered by SoSoValue's live news feeds and Claude AI. Delivers structured daily briefings, sector performance, and macro events — the full research layer of a professional trading desk.
@@ -155,9 +155,9 @@ A working one-person fund management business: you can design an index, execute 
 7. Show **Public Fund Page** → on-chain proof of trade execution
 
 ### Judge Alignment
-- **SoSoValue Terminal judges**: deep news + analysis integration ✓
-- **SSI Protocol judges**: custom index design and publishing ✓
-- **SoDEX judges**: live order execution, rebalancing, audit log ✓
+- **SoSoValue Terminal judges**: deep news + analysis integration 
+- **SSI Protocol judges**: custom index design and publishing 
+- **SoDEX judges**: live order execution, rebalancing, audit log 
 
 ---
 

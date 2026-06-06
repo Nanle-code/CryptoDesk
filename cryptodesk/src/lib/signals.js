@@ -1,7 +1,10 @@
 import { attachExplainability } from './explainability';
+import { ensureString } from './format';
 
 export function scoreArticle(item, index = -1) {
-  const text = `${item.title || ''} ${(item.content || '').replace(/<[^>]+>/g, ' ')}`.toLowerCase();
+  const title = ensureString(item.title);
+  const content = ensureString(item.content);
+  const text = `${title} ${content.replace(/<[^>]+>/g, ' ')}`.toLowerCase();
   const bull = ['surge', 'rally', 'inflow', 'record', 'approval', 'adoption', 'launch', 'accumulation', 'etf', 'bullish'];
   const bear = ['crash', 'dump', 'hack', 'exploit', 'ban', 'lawsuit', 'outflow', 'bearish', 'liquidation', 'sec'];
   let b = 0;
@@ -14,7 +17,8 @@ export function scoreArticle(item, index = -1) {
   if (net >= 2) { sentiment = 'bullish'; strength = Math.min(5, net); }
   else if (net <= -2) { sentiment = 'bearish'; strength = Math.min(5, Math.abs(net)); }
   const tickers = [...text.matchAll(/\$([A-Z]{2,5})\b/g)].map((m) => m[1]);
-  const asset = tickers[0] || item.matched_currencies?.[0]?.name || 'MARKET';
+  const rawAsset = item.matched_currencies?.[0]?.name || 'MARKET';
+  const asset = tickers[0] || (typeof rawAsset === 'object' ? (rawAsset.en || rawAsset.name || 'MARKET') : rawAsset);
   const confidence = Math.min(95, 35 + Math.abs(net) * 15);
   const impact = strength >= 4 ? 'high' : strength === 3 ? 'medium' : 'low';
   const time_horizon = strength >= 4 ? 'medium' : 'short';
@@ -98,7 +102,7 @@ export function sentimentPct(news) {
   const dw = ['crash', 'dump', 'hack', 'ban', 'bearish', 'outflow', 'lawsuit'];
   let bull = 0;
   news.forEach((item) => {
-    const t = `${item.title} ${item.content}`.toLowerCase();
+    const t = `${ensureString(item.title)} ${ensureString(item.content)}`.toLowerCase();
     const bs = bw.filter((w) => t.includes(w)).length;
     const ds = dw.filter((w) => t.includes(w)).length;
     if (bs > ds) bull++;

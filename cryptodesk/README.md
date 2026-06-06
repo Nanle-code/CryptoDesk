@@ -1,39 +1,15 @@
-# CryptoDesk Terminal
+# CryptoDesk
 
-**CryptoDesk Terminal** is a browser-based crypto intelligence workstation that turns live **SoSoValue** market data into ranked trading signals, **Grok** briefings, and **SoDEX** execution previews — on one screen.
+**CryptoDesk** is an AI-powered on-chain intelligence terminal that turns raw crypto market data into actionable trading decisions.
 
-Instead of acting like a generic news aggregator, CryptoDesk works as an **agentic intelligence layer**: ingest headlines and flows → analyze with lexicon + AI → surface signals → preview depth on SoDEX before any trade is placed.
+Instead of acting like a standard news aggregator or signal bot, CryptoDesk works as a **full data-to-decision pipeline**. It fetches real market data from SoSoValue, classifies signals with Grok AI, generates ranked opportunities with explainability, runs multi-agent investment committee reviews, and previews execution on SoDEX — all in one browser tab, no backend required.
 
-> CryptoDesk helps solo researchers and retail traders run a one-person crypto desk without a Bloomberg terminal budget.
-
-**Live demo:** [https://nanle-code.github.io/CryptoDesk/index.html](https://nanle-code.github.io/CryptoDesk/index.html)  
-**Stack:** React 19 · Vite 6 · client-side SPA (no backend)  
-**Buildathon:** [SoSoValue Buildathon on AKINDO](https://app.akindo.io/wave-hacks/JBEQXgN4Zi2jA3wA) · **Wave 3**
+> CryptoDesk gives solo researchers and retail traders a Bloomberg-grade intelligence loop without the Bloomberg budget.
 
 ---
 
-## Wave 3 — Opportunity Discovery Platform
-
-CryptoDesk is an **AI-powered Opportunity Discovery and Execution Intelligence Platform** (see `nextstep.md`). Shipped in Wave 3:
-
-- **Auto AI classification** — Grok classifies top 5 signals on every feed load
-- **Opportunity engine** — confidence · risk · horizon · auto Why? / Risks
-- **Investment committee** — Analyst · Risk · Macro · Execution agents
-- **Execution preview** — recommendation + allocation + slippage bound to SoDEX depth
-- **Research copilot · Narratives · Watchlist · Portfolio · SSI index · Strategy**
-- **🏁 Judge demo wizard** — guided 7-step flow in left nav
-- **📜 Signal archive** — session history of signals + opportunities (export JSON)
-- **📈 Kline charts** — SoDEX candles + SoSoValue area charts on SoDEX tab
-- **🔐 Order scaffold** — EIP-712 signed POST preview (`/trade/orders/batch`)
-- **📋 Order audit** — session log of prepared orders (export JSON)
-
-```text
-Settings → News → AI signals → Opportunities → Committee → Portfolio → SoDEX execution → Explainability
-```
-
 ## Table of Contents
 
-- [Example Workflow (Current App)](#example-workflow-current-app)
 - [Overview](#overview)
 - [Problem](#problem)
 - [Solution](#solution)
@@ -42,25 +18,39 @@ Settings → News → AI signals → Opportunities → Committee → Portfolio �
 - [System Architecture](#system-architecture)
 - [User Flow](#user-flow)
 - [Data Flow](#data-flow)
-- [Signal Engine](#signal-engine)
-- [Grok AI Layer](#grok-ai-layer)
+- [AI Agent Layer](#ai-agent-layer)
 - [SoSoValue Integration](#sosovalue-integration)
 - [SoDEX Integration](#sodex-integration)
-- [UI Surfaces](#ui-surfaces)
-- [Client API Layer](#client-api-layer)
+- [Signal Classification Engine](#signal-classification-engine)
+- [Panels](#panels)
 - [Storage](#storage)
 - [Button Behavior](#button-behavior)
-- [API Keys and Configuration](#api-keys-and-configuration)
+- [Environment Variables](#environment-variables)
 - [Installation](#installation)
 - [Running Locally](#running-locally)
-- [Build and Deploy](#build-and-deploy)
 - [Project Structure](#project-structure)
 - [Safety Rules](#safety-rules)
-- [Error Handling](#error-handling)
+- [Business Model](#business-model)
 - [Roadmap](#roadmap)
-- [Demo Flow for Judges](#demo-flow-for-judges)
-- [Quality Checklist](#quality-checklist)
 - [Disclaimer](#disclaimer)
+
+## Core Logic Flow
+
+```mermaid
+flowchart TD
+    A[Raw Market Data Ingestion] --> B{AI Sentiment Analysis}
+    B -- Bullish --> C[Rank as Opportunity]
+    B -- Bearish --> D[Risk Warning / Block]
+    B -- Neutral --> E[Contextual Monitoring]
+
+    C --> F[Investment Committee Review]
+    F --> G[Execution Preview on SoDEX]
+    G --> H[Final Order Preparation]
+    
+    D --> I[Signal Archive]
+    E --> I
+    H --> I
+```
 
 ---
 
@@ -70,245 +60,244 @@ CryptoDesk is designed for:
 
 - Solo crypto researchers
 - Retail traders
-- Signal-group operators
-- On-chain analysts
-- Hackathon judges verifying real API usage
-- Anyone who wants **news + flows + signals + execution preview** in one tab
+- DeFi users
+- Signal groups
+- Market analysts
+- Portfolio managers
+- DAO contributors
+- Trading communities
 
-The product ingests a live SoSoValue feed, scores every headline, and routes high-conviction ideas toward SoDEX market depth.
-
-See **[Example Workflow (Current App)](#example-workflow-current-app)** for the full click-by-click path. Quick version:
-
-```text
-Settings → Connect → News → 🔥 Opportunities → Committee → SoDEX execution preview → 🏁 Judge demo (optional tour)
-```
-
----
-
-## Example Workflow (Current App)
-
-This is the **exact journey** the shipped React terminal supports today (**Wave 3**).
-
-### What you see on load
+The product provides a complete intelligence terminal experience:
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ CryptoDesk · BTC/ETH/SOL/BNB tickers · [Generate Briefing] · ⚙ Settings    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ Trust bar: articles · signals · sentiment % · SoSoValue · SoDEX · Grok     │
-├──────────┬──────────────────────────────────────────────┬───────────────────┤
-│ LEFT NAV │ CENTER (3 tabs)                              │ RIGHT INTEL       │
-│          │ [News feed] [SoSoValue Hub] [SoDEX Terminal] │ panel             │
-│ News     │                                              │                   │
-│ SoSoValue│  Active tab content                          │ Article / signals │
-│ SoDEX    │                                              │ / ETF / macro…    │
-│ AI tools │                                              │                   │
-└──────────┴──────────────────────────────────────────────┴───────────────────┘
+Connect SoSoValue API + Grok API
+↓
+Live news feed → AI signal classification → Ranked opportunities
+↓
+Investment committee review → Strategy playbook → SoDEX execution preview
 ```
 
-Without a SoSoValue key: toast *“Demo mode — connect SoSoValue API in settings”* and **demo headlines** in the news tab only. Hub and intel panels ask you to connect; SoDEX still works (public API).
-
----
-
-### Step-by-step (live mode)
-
-| Step | Where to click | What happens | API / proof |
-|------|----------------|--------------|-------------|
-| **1** | Masthead → **⚙ Settings** | Modal: *Connect your APIs* | Keys → `sessionStorage` only |
-| **2** | Paste **SoSoValue** + **Grok** keys → **Connect →** | Toast: *Connected — loading live data…* | `cd_soso`, `cd_grok` |
-| **3** | Center tab **News feed** (default) · **Latest** | Headlines load; trust bar shows article + signal counts | `GET /news` |
-| **4** | (Optional) **🔥 Hot** or **★ Featured** | Switches endpoint | `/news/hot` · `/news/featured` |
-| **5** | Left nav → category (e.g. **Breaking**) | Filters latest feed | `GET /news?category=1` |
-| **6** | Click any **headline card** | Right panel → article + source link | Panel: *Article* |
-| **7** | (Optional) **✦ Analyze with Grok** | AI write-up in right panel | xAI `grok-2` |
-| **8** | Left nav → **📜 Signal archive** | Session history grows on feed refresh; export JSON | `cd_signal_archive` |
-| **9** | (Auto) Grok classifies top 5 on load | Trust bar: *Grok classifying…* → *Lexicon + Grok* | `classifySignal` |
-| **10** | Left nav → **🔥 Opportunities** | Cards with Why? / Risks · Committee · SoDEX preview | `buildOpportunities` |
-| **11** | **Committee** on top opportunity | 4-agent review + allocation % | `runInvestmentCommittee` |
-| **12** | **🏁 Judge demo** (optional) | 7-step wizard: news → execution | `DemoWizard` |
-| **13** | Left nav → **⚡ Signal feed** | Ranked signals (strength ≥ 2) | Lexicon + Grok |
-| **14** | **◎ Execution preview on SoDEX** | Center → SoDEX tab + bound preview card | `buildExecutionContext` |
-| **15** | Center tab **SoSoValue Hub** | 8 cards in parallel (ETF, sectors, macro…) | 8× SoSoValue |
-| **16** | Left nav → **₿ ETF flows** (or Macro, Sectors…) | Right panel with live table + `apiProof` footer | Per-panel endpoint |
-| **17** | Center tab **SoDEX Terminal** | Symbols, ticker strip, orderbook, trades; refreshes every **15s** | `testnet-gw.sodex.dev` |
-| **18** | Masthead → **Generate Briefing** | Right panel → Grok daily report | Same `/news` feed |
-| **19** | Left nav → **⟳ Agent workflow** | Full Wave 3 loop + judge demo CTA | UI |
-
----
-
-### Example outputs (illustrative)
-
-After step 3–8 with a live key, you might see:
+CryptoDesk delivers:
 
 ```text
-Trust bar
-  Articles: 30    Signals: 12    Sentiment: 58%    Data source: SoSoValue API
-
-Signal feed (right panel)
-  ⚡ bullish · ETH · strength 4
-     "BlackRock ETH ETF sees record inflow…" — 3 bullish cues
-
-  ⚡ bearish · BTC · strength 3
-     "Exchange outflows spike amid…" — 2 bearish cues
-```
-
-After step 11 (SoSoValue Hub):
-
-```text
-₿ BTC ETF flows (US)     GET /etfs/summary-history
-  Latest: +$247.5M · 2026-05-15
-
-◈ Sector spotlight       GET /currencies/sector-spotlight
-  AI: +4.2%   DeFi: +1.8%   Meme: -2.1%
-```
-
-After step 13 (SoDEX Terminal):
-
-```text
-Pair: vBTC_vUSDC
-GET /markets/symbols · /markets/tickers
-GET /markets/vBTC_vUSDC/orderbook · …/trades
-
-Bids / asks depth + last 15 prints
-Footer: Execution preview (Wave 3) — no order placed in Wave 2
-```
-
----
-
-### 60-second demo script (judges)
-
-```text
-1. Open live URL → Settings → SoSoValue + Grok → Connect →
-2. DevTools → Network → confirm openapi.sosovalue.com GET /news (code: 0)
-3. Click headline → article panel → click ⚡ Signal feed
-4. Click ◎ Preview top signal on SoDEX → confirm testnet-gw.sodex.dev
-5. Center tab SoSoValue Hub → scroll 8 cards (parallel requests)
-6. Generate Briefing → read Grok output in right panel
-7. ⟳ Agent workflow → point at SoSoValue → SoDEX loop
-```
-
----
-
-### Agentic loop (what the product is proving)
-
-```mermaid
-flowchart LR
-    A[SoSoValue INGEST] --> B[ANALYZE]
-    B --> C[SIGNAL]
-    C --> D[SoDEX PREVIEW]
-    D --> E[EXECUTE W3]
-
-    A --- A1["/news · macro · sectors\nETF · indices · treasuries"]
-    B --- B1["Lexicon + Grok"]
-    C --- C1["⚡ Signal feed"]
-    D --- D1["SoDEX Terminal\norderbook + trades"]
-    E --- E1["Signed orders\nnot shipped yet"]
+5 live articles → 2 AI signals → 40% bullish sentiment
+Top Opportunity: ETH — Buy — 78% confidence
+Committee: Analyst  Risk  Macro  Execution 
+Strategy: Ethereum ETF Momentum — 14 days — Medium risk
+Execution: Preview on SoDEX testnet — 0.12% slippage
 ```
 
 ---
 
 ## Problem
 
-Crypto operators drown in fragmented tools:
+Crypto users make trading decisions with fragmented tools and incomplete data.
 
-- News lives in one app; ETF flows and sector data in another.
-- Social signals lack structure (no strength, asset, or sentiment score).
-- AI chatbots are disconnected from live market APIs.
-- Execution venues are opened **before** reading orderbook depth.
-- Many hackathon demos use **mock panels** that break under judge scrutiny.
+Common problems include:
 
-Most products optimize for *finding* hype. CryptoDesk optimizes for **structured intelligence → signal → preview**.
+- News, signals, and execution are spread across different platforms.
+- Traders act on hype without understanding risk context.
+- Signal bots provide recommendations with no explainability.
+- No connection exists between market intelligence and trade execution.
+- Retail traders cannot access institutional-grade analysis workflows.
+- Portfolio construction is disconnected from real-time market data.
+- Market narrative shifts are invisible until it is too late.
+
+Most crypto tools solve one piece of the puzzle.
+
+CryptoDesk connects every piece — from data ingestion to execution preview.
 
 ---
 
 ## Solution
 
-CryptoDesk creates a single terminal between **market intelligence** and **execution planning**.
+CryptoDesk creates a unified intelligence terminal that handles the entire trading decision workflow.
 
 It helps users answer:
 
-- What is moving in crypto news right now?
-- Which headlines carry tradeable conviction?
-- What do ETF flows, sectors, and macro say today?
-- What is corporate BTC treasury activity?
-- Can this idea be sized against real SoDEX liquidity?
-- What does Grok synthesize from the same SoSoValue feed?
+- What is happening in the market right now?
+- Which news items are actionable signals?
+- What opportunities exist and why?
+- What do multiple AI agents think about this trade?
+- What is the optimal portfolio allocation?
+- Which narratives are rotating?
+- What does the execution look like on SoDEX?
+- What is my signal history and audit trail?
 
 ---
 
 ## Core Features
 
-### 1. Live News Feed (SoSoValue)
+### 1. Real-Time News Feed
 
-Three feed modes from the OpenAPI:
+CryptoDesk pulls live crypto news from SoSoValue's OpenAPI.
 
-- `GET /news` — latest, filterable by category
-- `GET /news/hot` — trending
-- `GET /news/featured` — editorial picks
+Sources:
 
-Categories: All · Breaking · Research · Institutional · KOL.
+- Latest news (`/news`)
+- Hot news (`/news/hot`)
+- Featured news (`/news/featured`)
 
-### 2. Lexicon Signal Engine
+Features:
 
-Every headline is scored locally (no extra API call):
+- Category filtering (Breaking, Research, Institutional, KOL)
+- Tab switching (Latest, Hot, Featured)
+- Article count badges
+- Real-time reload
 
+---
 
-| Output      | Description                               |
-| ----------- | ----------------------------------------- |
-| `sentiment` | `bullish` · `bearish` · `neutral`         |
-| `strength`  | 1–5 (only ≥2 shown in Signal Feed)        |
-| `asset`     | Ticker from `$SYMBOL` or matched currency |
-| `reason`    | Human-readable cue count                  |
+### 2. AI Signal Classification
 
+Grok AI automatically classifies the top 5 news articles on every feed load.
 
-Optional **Grok enhancement** re-scores the top 3 signals.
+Each signal includes:
 
-### 3. SoSoValue Intelligence Hub
+| Field | Output |
+|---|---|
+| Sentiment | Bullish, Bearish, or Neutral |
+| Confidence | 0–100% |
+| Affected Assets | ETH, BTC, SOL, etc. |
+| Impact | High, Medium, or Low |
+| Time Horizon | Short, Medium, or Long |
+| Recommendation | Buy, Sell, or Hold |
+| Risk | Low, Medium, or High |
+| Reason | One-sentence explanation |
 
-Center-tab dashboard — **8 parallel API calls** on load:
+---
 
-- Sector spotlight
-- BTC + ETH ETF summary history (US)
-- Macro events calendar
-- SSI indices
-- BTC corporate treasuries
-- Fundraising projects
-- ETF list
+### 3. Opportunity Discovery Engine
 
-### 4. SoDEX Spot Terminal
+CryptoDesk builds ranked opportunities from classified signals and news data.
 
-Public testnet REST — **no API key required**:
+Each opportunity card shows:
 
-- Symbol list · tickers · orderbook · recent trades
-- Auto-refresh every 15 seconds
-- Execution preview copy for Wave 3 (EIP-712 signed orders)
+- Asset and recommendation
+- Confidence score
+- **Why?** bullets — explainability for every recommendation
+- **Risks** — risk drivers from AI assessment
+- One-click actions: Risk Assess, Committee Review, Strategy, Execute on SoDEX
 
-Default pair: `vBTC_vUSDC`.
+---
 
-### 5. Grok AI Briefings
+### 4. Investment Committee
 
-With a Grok (xAI) key:
+A multi-agent AI review system that simulates an institutional investment committee.
 
-- **Daily briefing** from the top 20 headlines
-- **Per-article analysis** on click
-- **Signal enhancement** for top 3 opportunities
+| Agent | Role |
+|---|---|
+| Analyst | Market view and thesis |
+| Risk Agent | Risk assessment and drivers |
+| Macro Agent | Macro context and conditions |
+| Execution Agent | SoDEX readiness and slippage |
 
-### 6. Agent Workflow Panel
+Output:
 
-Documents the full loop in the UI:
+- Final recommendation (Buy / Sell / Hold)
+- Confidence score
+- Risk level
+- Allocation percentage
+- Slippage estimate
+- Supporting reasons
 
-```text
-SoSoValue INGEST → ANALYZE (Grok + lexicon) → SIGNAL → SoDEX PREVIEW → EXECUTE (Wave 3)
-```
+---
 
-### 7. Intelligence Side Panel
+### 5. Portfolio Intelligence Agent
 
-Context panels with **API proof footers** (endpoint + UTC timestamp):
+Users configure:
 
-- Macro calendar · Sector spotlight · Dual ETF flows
-- SSI indices (+ constituents when available)
-- BTC treasuries · Fundraising radar
-- SoDEX orderbook snapshot · Agent workflow
+- Capital amount
+- Risk tolerance (Conservative / Balanced / Aggressive)
+- Goal (Growth / Income / Preservation)
+
+CryptoDesk generates:
+
+- Asset allocations with percentages
+- Per-asset reasoning
+- Portfolio thesis
+- Risk control note
+
+---
+
+### 6. Narrative Rotation Scanner
+
+Detects capital rotation between crypto narratives and sectors.
+
+Output:
+
+- Current dominant narrative
+- Current momentum (Strengthening / Stable / Weakening)
+- Emerging narrative
+- Emerging momentum
+- Rotation insight
+
+---
+
+### 7. SSI Index Builder
+
+Designs custom thematic indices aligned with SoSoValue's SSI Protocol.
+
+Features:
+
+- Theme selection (AI Index, DeFi, L1/L2, etc.)
+- Grok-designed constituents with weights
+- Live alignment with SoSoValue SSI data when connected
+- Methodology and rebalance rules
+
+---
+
+### 8. Research Copilot
+
+Free-form conversational research assistant.
+
+Users ask any crypto question and receive structured, actionable answers grounded in the current SoSoValue news feed.
+
+---
+
+### 9. Strategy Generator
+
+Generates trade strategy playbooks from any opportunity.
+
+Output:
+
+- Strategy name
+- Entry guidance
+- Risk level
+- Time horizon
+- Action (Buy / Sell / Hold / Accumulate)
+- Thesis
+- Exit criteria
+
+---
+
+### 10. SoDEX Trading Terminal
+
+Full market data terminal connected to SoDEX testnet:
+
+- Live ticker data (15s refresh)
+- Orderbook depth visualization
+- Dual kline charts (SoDEX + SoSoValue)
+- Recent trades feed
+- Execution preview card (bound to opportunity + committee data)
+- EIP-712 order builder (JSON body, typed data, curl preview)
+
+---
+
+### 11. Watchlist with Alerts
+
+- Add any token to watchlist
+- Cross-reference with live signals and opportunities
+- Automatic alerts when watchlist assets have high-severity signals
+- Toast notifications for watchlist events
+
+---
+
+### 12. Signal Archive & Order Audit
+
+- Persistent signal archive (session history)
+- Export signal history as JSON
+- Order audit trail for prepared SoDEX orders
+- Export order audit as JSON
 
 ---
 
@@ -316,71 +305,74 @@ Context panels with **API proof footers** (endpoint + UTC timestamp):
 
 ```mermaid
 flowchart TD
-    A[Open CryptoDesk Terminal] --> B{SoSoValue key?}
-    B -- No --> C[Demo news only + connect toast]
-    B -- Yes --> D[Live /news · /hot · /featured]
-    D --> E[Lexicon scores all headlines]
-    E --> F[Trust bar + ⚡ Signal feed]
-    D --> G[Center: SoSoValue Hub - 8 APIs]
-    F --> H[◎ Preview on SoDEX]
-    H --> I[Center: SoDEX Terminal - 4 APIs]
-    I --> J[Orderbook + trades - no orders]
-    D --> K[✦ Generate Briefing]
-    K --> L[Grok in right panel]
-    G --> M[Left nav drill-down panels]
-    M --> N[ETF · Macro · Sectors · Treasuries…]
+    A[User Connects API Keys] --> B[Fetch SoSoValue News Feed]
+    B --> C[Grok Auto-Classifies Top 5 Signals]
+    C --> D[Build Ranked Opportunities]
+    D --> E[Show Opportunity Cards with Explainability]
+    E --> F{User Action}
+    F --> G[Risk Assessment]
+    F --> H[Investment Committee Review]
+    F --> I[Strategy Playbook]
+    F --> J[Execute on SoDEX]
+    G --> H
+    H --> J
+    I --> J
+    J --> K[Execution Preview Card]
+    K --> L[EIP-712 Order Builder]
+    L --> M[Order Audit Trail]
 ```
-
-
 
 ---
 
 ## System Architecture
 
-CryptoDesk is a **client-side SPA** (React 19 + Vite 6). All API calls run in the browser; there is no custom backend server.
-
 ```mermaid
 flowchart LR
-    subgraph Frontend[Frontend - React + Vite]
-        A[Masthead + Tickers]
-        B[Nav: SoSoValue × SoDEX Tools]
-        C[MainWorkspace]
-        D[IntelligencePanel]
-        E[SettingsModal]
+    subgraph Frontend["Frontend — Vite + React"]
+        A[Masthead + Trust Bar]
+        B[News Feed]
+        C[Intelligence Panel]
+        D[SoDEX Terminal]
+        E[Settings Modal]
     end
 
-    subgraph MainTabs[MainWorkspace Tabs]
-        C1[News Feed]
-        C2[SoSoValue Hub]
-        C3[SoDEX Terminal]
+    subgraph AILayer["AI Layer — Grok 2"]
+        F[Signal Classifier]
+        G[Opportunity Explainer]
+        H[Investment Committee]
+        I[Research Copilot]
+        J[Portfolio Agent]
+        K[Narrative Scanner]
+        L[SSI Index Builder]
+        M[Strategy Generator]
+        N[Daily Briefing]
     end
 
-    subgraph External[External APIs]
-        F[SoSoValue OpenAPI v1]
-        G[SoDEX Spot REST]
-        H[Grok xAI API]
+    subgraph DataSources["External Data Sources"]
+        O[SoSoValue OpenAPI v1]
+        P[SoDEX Spot REST API v1]
     end
 
-    subgraph Core[Core Logic]
-        I[useNews / useTickers]
-        J[signals.js Lexicon]
-        K[createSoSoClient]
-        L[sodexSpot client]
-        M[GrokAPI]
+    subgraph Storage["Client Storage"]
+        Q[Session Storage — API Keys]
+        R[Local Storage — Reports + Watchlist]
+        S[Session Storage — Signal Archive]
     end
 
-    C --> C1 & C2 & C3
-    C1 --> I
-    I --> F
-    I --> J
-    C2 --> K --> F
-    C3 --> L --> G
-    D --> K & L
-    D --> M --> H
-    A --> I
+    B --> O
+    D --> P
+    C --> F
+    C --> G
+    C --> H
+    C --> I
+    C --> J
+    C --> K
+    C --> L
+    C --> M
+    C --> N
+    A --> O
+    E --> Q
 ```
-
-
 
 ---
 
@@ -391,41 +383,40 @@ sequenceDiagram
     participant User
     participant UI as CryptoDesk UI
     participant SoSo as SoSoValue API
-    participant SoDEX as SoDEX Spot API
-    participant Sig as Signal Engine
-    participant Grok as Grok API
+    participant Grok as Grok AI
+    participant SoDEX as SoDEX API
+    participant Store as Client Storage
 
-    User->>UI: Enter API keys → Connect
-    UI->>SoSo: GET /news (or /hot, /featured)
-    SoSo-->>UI: Headlines
-    UI->>Sig: buildSignals(headlines)
-    Sig-->>UI: Ranked signals (strength ≥2)
-    UI-->>User: News cards + stats strip
+    User->>UI: Configure API keys in Settings
+    UI->>Store: Save keys to sessionStorage
+    UI->>SoSo: GET /news (latest, hot, featured)
+    SoSo-->>UI: News articles
+    UI->>Grok: Classify top 5 articles
+    Grok-->>UI: Signal classifications
+    UI->>UI: Build ranked opportunities
+    UI-->>User: Display news + signals + opportunities
 
-    opt SoSoValue Hub tab
-        User->>UI: Open SoSoValue Hub
-        par 8 parallel calls
-            UI->>SoSo: sectors, ETF, macro, indices…
-        end
-        SoSo-->>UI: Dashboard cards
+    alt User clicks Risk Assess
+        UI->>Grok: Assess opportunity risk
+        Grok-->>UI: Risk drivers + conviction
     end
 
-    opt SoDEX tab
-        User->>UI: Open SoDEX Terminal
-        par 4 parallel calls
-            UI->>SoDEX: symbols, tickers, orderbook, trades
-        end
-        SoDEX-->>UI: Market depth
+    alt User clicks Committee Review
+        UI->>Grok: Run 4-agent committee
+        Grok-->>UI: Committee verdict + allocation
     end
 
-    opt AI briefing
-        User->>UI: Generate Briefing
-        UI->>Grok: chat/completions (top headlines)
-        Grok-->>UI: Structured report
+    alt User clicks Execute on SoDEX
+        UI->>SoDEX: Fetch ticker + orderbook + klines
+        SoDEX-->>UI: Market data
+        UI-->>User: Show execution preview
+    end
+
+    alt User adds to Watchlist
+        User->>UI: Add token
+        UI->>Store: Save to localStorage
     end
 ```
-
-
 
 ---
 
@@ -433,365 +424,374 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    A[SoSoValue API Key] --> B[useNews Hook]
-    B --> C[/news · /news/hot · /news/featured]
-    C --> D[News Cards]
-    C --> E[buildSignals]
-    E --> F[Signal Feed]
-    E --> G[Sentiment % in Stats Strip]
+    A[SoSoValue News Feed] --> B[Signal Classification — Grok]
+    A --> C[Lexicon Scoring — Local]
 
-    A --> H[createSoSoClient]
-    H --> I[Hub + Intel Panels]
-    I --> J[macro · sectors · ETF · indices · treasuries · fundraising]
+    B --> D[Classified Signals]
+    C --> D
 
-    K[No key required] --> L[sodexSpot]
-    L --> M[symbols · tickers · orderbook · trades]
-    M --> N[SoDEX Terminal + Orderbook Panel]
+    D --> E[Opportunity Builder]
+    E --> F[Ranked Opportunity Cards]
 
-    O[Grok API Key] --> P[GrokAPI]
-    P --> Q[Briefing · Article Analysis · Signal Enhance]
-    D --> P
+    F --> G[Explainability — Grok]
+    F --> H[Risk Assessment — Grok]
+    F --> I[Committee Review — Grok]
+    F --> J[Strategy Generator — Grok]
+
+    G --> F
+    H --> F
+    I --> K[Execution Context Builder]
+    J --> K
+
+    K --> L[SoDEX Terminal]
+    L --> M[Order Builder — EIP-712]
+    M --> N[Order Audit Trail]
+
+    F --> O[Signal Archive]
+    F --> P[Watchlist Cross-Reference]
 ```
-
-
 
 ---
 
-## Signal Engine
+## AI Agent Layer
 
-The signal engine is **deterministic and local** — it runs on every headline without an LLM.
-
-### Inputs
-
-- Article `title` and `content` (HTML stripped)
-- Optional `matched_currencies` from SoSoValue
-
-### Lexicon
-
-
-| Direction | Example cues                                                                         |
-| --------- | ------------------------------------------------------------------------------------ |
-| Bullish   | surge, rally, inflow, record, approval, adoption, launch, accumulation, etf, bullish |
-| Bearish   | crash, dump, hack, exploit, ban, lawsuit, outflow, bearish, liquidation, sec         |
-
-
-### Scoring rules
+CryptoDesk uses Grok 2 (`grok-2` model via `api.x.ai`) as its AI backbone. All AI calls are client-side — no backend server required.
 
 ```mermaid
 flowchart TD
-    A[Headline Text] --> B[Count Bull / Bear Cues]
-    B --> C{net = bull - bear}
-    C -->|net ≥ 2| D[Bullish · strength = min5 net]
-    C -->|net ≤ -2| E[Bearish · strength = min5 abs net]
-    C -->|else| F[Neutral · strength 1]
-    D --> G{strength ≥ 2?}
-    E --> G
-    F --> G
-    G -- Yes --> H[Show in Signal Feed]
-    G -- No --> I[Hidden from feed]
-```
+    A[Grok AI Layer] --> B[Auto Classifier]
+    A --> C[Opportunity Explainer]
+    A --> D[Risk Assessor]
+    A --> E[Investment Committee]
+    A --> F[Research Copilot]
+    A --> G[Narrative Scanner]
+    A --> H[Portfolio Agent]
+    A --> I[SSI Index Builder]
+    A --> J[Strategy Generator]
+    A --> K[Daily Briefing]
 
-
-
-### Signal object
-
-```js
-{
-  sentiment: 'bullish' | 'bearish' | 'neutral',
-  strength: 1..5,
-  asset: 'BTC' | 'ETH' | 'MARKET' | ...,
-  title: string,
-  reason: string,
-  index: number  // news array index
-}
+    B --> L[Top 5 signals on every feed load]
+    C --> M[Why? + Risks bullets on every card]
+    D --> N[Risk drivers + conviction + mitigation]
+    E --> O[4-agent verdict + allocation + slippage]
+    F --> P[Free-form research Q&A]
+    G --> Q[Current vs emerging narrative rotation]
+    H --> R[Capital allocation from live feed]
+    I --> S[Custom index aligned to SSI Protocol]
+    J --> T[Trade playbook with exit criteria]
+    K --> U[Structured market report]
 ```
 
 ---
 
-## Grok AI Layer
+### AI Agent Details
 
-Grok is **optional** and separate from SoSoValue / SoDEX.
-
-
-| Feature          | Trigger              | Model                             |
-| ---------------- | -------------------- | --------------------------------- |
-| Daily briefing   | Masthead or nav      | `grok-2` via xAI chat completions |
-| Article analysis | Article panel button | Same                              |
-| Signal enhance   | Signal feed button   | Top 3 signals re-scored           |
-
-
-Without a Grok key, lexicon signals and all SoSoValue / SoDEX data still work.
+| Agent | Trigger | Input | Output |
+|---|---|---|---|
+| Auto Classifier | Every feed load | Top 5 news articles | Sentiment, confidence, assets, recommendation |
+| Opportunity Explainer | Background after classify | All opportunities + news | Why? and Risks bullets on each card |
+| Risk Assessor | User clicks "Risk Assess" | Article + recommendation | Risk level, drivers, conviction, mitigation |
+| Investment Committee | User clicks "Committee" | Article + opportunity | 4-agent vote, allocation %, slippage |
+| Research Copilot | User types query | News feed + question | Structured research answer |
+| Narrative Scanner | User opens Narratives | News + sector data + indices | Current/emerging narratives + rotation insight |
+| Portfolio Agent | User configures portfolio | News + capital/risk/goal | Allocations with reasoning |
+| SSI Index Builder | User selects theme | News + SSI reference data | Themed index with weights + methodology |
+| Strategy Generator | User clicks "Strategy" | Article + opportunity | Named playbook with exit criteria |
+| Daily Briefing | User clicks "AI Briefing" | Full news feed | Executive summary, signals, risk watch |
 
 ---
 
 ## SoSoValue Integration
 
-**Base URL:** `https://openapi.sosovalue.com/openapi/v1`  
-**Auth header:** `x-soso-api-key: <your-key>`
+SoSoValue is the primary market data layer. All data is fetched client-side via the SoSoValue OpenAPI v1.
 
-SoSoValue is the **primary intelligence layer** — news, macro, sectors, ETF flows, indices, treasuries, and fundraising.
-
-### Endpoints used in the app
-
-
-| Endpoint                               | UI location                     |
-| -------------------------------------- | ------------------------------- |
-| `GET /news`                            | News feed · Latest tab          |
-| `GET /news/hot`                        | News feed · Hot tab             |
-| `GET /news/featured`                   | News feed · Featured tab        |
-| `GET /currencies`                      | Masthead ticker resolution      |
-| `GET /currencies/{id}/market-snapshot` | BTC · ETH · SOL · BNB price bar |
-| `GET /currencies/sector-spotlight`     | Hub card · Sector panel         |
-| `GET /macro/events`                    | Hub card · Macro panel          |
-| `GET /etfs/summary-history`            | Hub + ETF panel (BTC & ETH, US) |
-| `GET /etfs`                            | Hub · ETF list card             |
-| `GET /indices`                         | Hub · Indices panel             |
-| `GET /indices/{ticker}/constituents`   | Indices panel (first index)     |
-| `GET /btc-treasuries`                  | Hub · Treasuries panel          |
-| `GET /fundraising/projects`            | Hub · Fundraising panel         |
-
-
-### Additional client methods (ready in `sosovalue.js`)
-
-Available in the client — wired to **SoDEX Terminal** kline panel:
-
-- `GET /currencies/{id}/klines` — SoSoValue spot history (with API key)
-- `GET /indices/{ticker}/klines` — index history (client ready)
-- `GET /etfs/{ticker}/market-snapshot`
-- `GET /indices/{ticker}/market-snapshot`
-- `GET /indices/{ticker}/klines`
-- `GET /btc-treasuries/{ticker}/purchase-history`
-- `GET /analyses` · `GET /analyses/{name}`
-
-### SoSoValue data flow
+### Endpoints Used
 
 ```mermaid
 flowchart TD
-    A[User API Key] --> B[createSoSoClient]
-    B --> C[News Hooks]
-    B --> D[SoSoValue Hub - 8 calls]
-    B --> E[Intelligence Panels]
-    C --> F[Headlines + Signals]
-    D --> G[ETF · Sectors · Macro · Indices · Treasuries · Fundraising]
-    E --> H[Side panel drill-down]
-    F --> I[Grok Briefing Input]
+    A[SoSoValue OpenAPI v1] --> B["GET /news"]
+    A --> C["GET /news/hot"]
+    A --> D["GET /news/featured"]
+    A --> E["GET /currencies"]
+    A --> F["GET /currencies/{id}/market-snapshot"]
+    A --> G["GET /currencies/{id}/klines"]
+    A --> H["GET /currencies/sector-spotlight"]
+    A --> I["GET /etfs/summary-history"]
+    A --> J["GET /etfs"]
+    A --> K["GET /indices"]
+    A --> L["GET /indices/{ticker}/constituents"]
+    A --> M["GET /indices/{ticker}/market-snapshot"]
+    A --> N["GET /btc-treasuries"]
+    A --> O["GET /fundraising/projects"]
+    A --> P["GET /macro/events"]
+    A --> Q["GET /analyses"]
+
+    B --> R[News Feed]
+    E --> S[Masthead Tickers]
+    H --> T[Sector Spotlight + Narratives]
+    I --> U[ETF Flow Monitor]
+    K --> V[SSI Index Builder]
+    N --> W[BTC Treasuries Panel]
+    O --> X[Fundraising Panel]
+    P --> Y[Macro Events Panel]
 ```
 
+### SoSoValue Hub
 
+The SoSoValue Hub tab fires 8 parallel GETs on open:
 
-### Demo mode (no key)
-
-If no SoSoValue key is set, the feed loads `**mockNews()**` — clearly labeled via toast: *“Demo mode — connect SoSoValue API in settings.”*  
-Intel panels show `Connect SoSoValue API key in Settings` instead of faking live macro/ETF data.
+| Endpoint | Panel |
+|---|---|
+| `/currencies/sector-spotlight` | Sectors |
+| `/etfs/summary-history` | ETF Flows |
+| `/indices` | SSI Indices |
+| `/btc-treasuries` | BTC Treasuries |
+| `/fundraising/projects` | Fundraising |
+| `/macro/events` | Macro Calendar |
+| `/etfs` | ETF List |
+| `/analyses` | On-Chain Analytics |
 
 ---
 
 ## SoDEX Integration
 
-**Testnet base:** `https://testnet-gw.sodex.dev/api/v1/spot`  
-**Mainnet base:** `https://mainnet-gw.sodex.dev/api/v1/spot` (client supports; UI defaults to testnet)
+SoDEX is the market microstructure and execution preview layer. Public market data does not require authentication.
 
-SoDEX is the **execution and microstructure layer** — public reads need **no API key**.
-
-### Endpoints used in Wave 2
-
-
-| Endpoint                          | Purpose       |
-| --------------------------------- | ------------- |
-| `GET /markets/symbols`            | Symbol picker |
-| `GET /markets/tickers`            | Ticker strip  |
-| `GET /markets/{symbol}/orderbook` | Bid/ask depth |
-| `GET /markets/{symbol}/trades`    | Recent prints |
-
-
-### Client also exposes
-
-`coins`, `miniTickers`, `bookTickers`, `klines` — **klines** rendered in SoDEX Terminal (`GET /markets/{sym}/klines`).
-
-### SoDEX data flow
+### Endpoints Used
 
 ```mermaid
 flowchart TD
-    A[Select Symbol e.g. vBTC_vUSDC] --> B[sodexSpot Parallel Fetch]
-    B --> C[symbols]
-    B --> D[tickers]
-    B --> E[orderbook]
-    B --> F[trades]
-    C --> G[SoDEX Terminal UI]
-    D --> G
-    E --> G
-    F --> G
-    G --> H[Execution Preview Copy - Wave 3]
+    A[SoDEX Spot REST API v1] --> B[markets/symbols]
+    A --> C[markets/tickers]
+    A --> D[markets/bookTickers]
+    A --> E["markets/{symbol}/orderbook"]
+    A --> F["markets/{symbol}/klines"]
+    A --> G["markets/{symbol}/trades"]
+    A --> H[markets/coins]
+    A --> I[markets/miniTickers]
+
+    C --> J[Live Price Ticker — 15s refresh]
+    E --> K[Orderbook Depth Visualization]
+    F --> L[Kline Charts — 1H / 4H / 1D]
+    G --> M[Recent Trades Feed]
+    D --> N[Best Bid/Ask Spread]
 ```
 
-
-
-### SoDEX usage levels
+### Execution Flow
 
 ```mermaid
 flowchart TD
-    A[SoDEX in CryptoDesk] --> B[Wave 2 - Live]
-    A --> C[Wave 3 - Planned]
-
-    B --> D[Public market data]
-    B --> E[Orderbook + trades preview]
-    B --> F[Signal → open terminal CTA]
-    B --> G[15s auto-refresh]
-
-    C --> H[Testnet order placement]
-    C --> I[EIP-712 signing]
-    C --> J[Wallet connect]
+    A[Opportunity Card] --> B[Open on SoDEX]
+    B --> C[Build Execution Context]
+    C --> D[Execution Preview Card]
+    D --> E[Allocation + Slippage + Route]
+    E --> F{User Wants to Execute?}
+    F -- No --> G[Save to Signal Archive]
+    F -- Yes --> H[EIP-712 Order Builder]
+    H --> I[JSON Body Preview]
+    H --> J[Typed Data Preview]
+    H --> K[cURL Command Preview]
+    I --> L[Order Audit Trail]
 ```
 
+### SoDEX Usage Levels
 
+```mermaid
+flowchart TD
+    A[SoDEX Integration] --> B[Level 1: Shipped]
+    A --> C[Level 2: Scaffold]
+    A --> D[Level 3: Future]
 
-**Note:** `cd_sodex` in session storage is reserved for future authenticated actions. Public market data works without it.
+    B --> E[Public Market Data]
+    B --> F[Ticker + Orderbook + Klines + Trades]
+    B --> G[Execution Preview Card]
+    B --> H[Dual Kline Charts]
+
+    C --> I[EIP-712 Order Builder]
+    C --> J[JSON + Typed Data + cURL]
+    C --> K[Order Audit Trail]
+
+    D --> L[Live Signed POST]
+    D --> M[SoDEX SDK Integration]
+    D --> N[Portfolio Execution]
+```
 
 ---
 
-## UI Surfaces
+## Signal Classification Engine
 
-CryptoDesk uses a **three-column layout**: Nav · Main workspace · Intelligence panel.
+CryptoDesk uses a hybrid classification approach:
+
+1. **Lexicon scoring** — local keyword-based sentiment analysis runs on every article immediately
+2. **Grok classification** — AI-powered deep classification runs on the top 5 articles
 
 ```mermaid
-flowchart TD
-    A[CryptoDesk Terminal] --> B[Left Nav]
-    A --> C[Center MainWorkspace]
-    A --> D[Right IntelligencePanel]
+flowchart LR
+    A[News Article] --> B[Lexicon Scorer — Local]
+    A --> C[Grok Classifier — AI]
 
-    B --> B1[News categories]
-    B --> B2[SoSoValue tools]
-    B --> B3[SoDEX tools]
-    B --> B4[AI tools]
+    B --> D[Base Sentiment + Strength]
+    C --> E[Full Classification Object]
 
-    C --> C1[Tab: News Feed]
-    C --> C2[Tab: SoSoValue Hub]
-    C --> C3[Tab: SoDEX Terminal]
+    D --> F[Merged Signal]
+    E --> F
 
-    D --> D1[Article / Briefing / Signals]
-    D --> D2[Macro / ETF / Sectors / Indices]
-    D --> D3[Treasuries / Fundraising / SoDEX snapshot]
+    F --> G[Signal List]
+    F --> H[Opportunity Builder]
+    F --> I[Watchlist Cross-Reference]
+    F --> J[Signal Archive]
 ```
-
-
-
-### Center tabs
-
-
-| Tab            | Route (in-app)   | Data source               |
-| -------------- | ---------------- | ------------------------- |
-| News feed      | `mainTab: news`  | SoSoValue `/news*`        |
-| SoSoValue Hub  | `mainTab: soso`  | 8× SoSoValue endpoints    |
-| SoDEX Terminal | `mainTab: sodex` | 4× SoDEX public endpoints |
-
-
-### Masthead
-
-- Live tickers (BTC, ETH, SOL, BNB) via currencies + market-snapshot
-- **Generate Briefing** → Grok
-
-### Trust bar
-
-Articles count · Signals count · Bullish sentiment % · SoSoValue / SoDEX / Grok badges
 
 ---
 
-## Client API Layer
+## Panels
 
-There is **no Next.js `/api` backend**. All integration is in the browser:
+CryptoDesk has a three-column terminal layout.
 
+```mermaid
+flowchart TD
+    A[CryptoDesk Terminal] --> B[Left — Navigation]
+    A --> C[Center — Main Workspace]
+    A --> D[Right — Intelligence Panel]
 
-| Module           | File                      | Role                                  |
-| ---------------- | ------------------------- | ------------------------------------- |
-| SoSoValue fetch  | `src/lib/api.js`          | `sosoFetch`, `unwrapData`, `apiProof` |
-| SoSoValue client | `src/api/sosovalue.js`    | `createSoSoClient()`                  |
-| SoDEX client     | `src/api/sodex.js`        | `sodexSpot.`*                         |
-| Grok client      | `src/api/grok.js`         | `GrokAPI` class                       |
-| News hook        | `src/hooks/useNews.js`    | Feed + signals + auto-refresh 60s     |
-| Tickers hook     | `src/hooks/useTickers.js` | Masthead prices                       |
+    B --> E[Category Filters]
+    B --> F[SoSoValue Data Sections]
+    B --> G[Panel Shortcuts]
+    B --> H[Judge Demo Button]
 
+    C --> I[News Feed Tab]
+    C --> J[SoSoValue Hub Tab]
+    C --> K[SoDEX Terminal Tab]
+
+    D --> L[Signals Panel]
+    D --> M[Opportunities Panel]
+    D --> N[Article Analysis Panel]
+    D --> O[Briefing Panel]
+    D --> P[Research Copilot Panel]
+    D --> Q[Narratives Panel]
+    D --> R[Portfolio Panel]
+    D --> S[SSI Index Panel]
+    D --> T[Strategy Panel]
+    D --> U[Watchlist Panel]
+    D --> V[Signal Archive Panel]
+    D --> W[Order Audit Panel]
+```
+
+### Navigation Panels
+
+| Panel | Shortcut | Purpose |
+|---|---|---|
+| News Feed | Default | Browse SoSoValue articles |
+| SoSoValue Hub | [HUB] | 8 parallel data dashboards |
+| SoDEX Terminal | [SDX] | Live market data + order builder |
+| Signals | [SIG] | AI-classified signal list |
+| Opportunities | [OPP] | Ranked opportunity cards |
+| AI Briefing | [BRF] | Grok-generated market briefing |
+| Research Copilot | [CP] | Free-form research Q&A |
+| Narratives | [NAR] | Narrative rotation scanner |
+| Portfolio | [PF] | Portfolio intelligence agent |
+| SSI Index | [SSI] | Custom index builder |
+| Strategy | [STR] | Trade playbook generator |
+| Watchlist | [WCH] | Token watchlist with alerts |
+| Signal Archive | [ARC] | Session signal history |
+| Order Audit | [AUD] | Prepared order trail |
+| Judge Demo | [DEM] | Guided 7-step demo wizard |
 
 ---
 
 ## Storage
 
-CryptoDesk stores **only configuration** in the browser — no server database.
+CryptoDesk stores only real user-generated data. All storage is client-side.
 
-### Session storage keys
+### Session Storage
 
-```text
-cd_soso   → SoSoValue API key
-cd_grok   → Grok (xAI) API key
-cd_sodex  → Reserved for future SoDEX signing
-cd_topic  → Optional briefing focus topic
-cd_dark   → Theme preference
-```
+| Key | Data |
+|---|---|
+| `cd_soso` | SoSoValue API key |
+| `cd_grok` | Grok API key |
+| `cd_sodex` | SoDEX API key |
+| `cd_topic` | Focus topic preference |
+| `cd_dark` | Dark mode preference |
 
-Keys are kept in `**sessionStorage**` (cleared when the tab closes). They are **never** written to the repository or committed to git.
+### Local Storage
 
-### What is not stored
+| Key | Data |
+|---|---|
+| `cd_watchlist` | User-added watchlist tokens |
+| `cd_signal_archive` | Persistent signal history |
+| `cd_order_audit` | Prepared order audit trail |
 
-- No fake saved reports
-- No seeded watchlist
-- No hardcoded dashboard history
-- No live order POST from browser (scaffold + mock sign only)
+### Rules
+
+- No fake reports
+- No seeded watchlist data
+- No mock dashboard metrics
+- No hardcoded market data
+- All data comes from live API responses or real user actions
 
 ---
 
 ## Button Behavior
 
-Every primary control maps to a real action:
+Every visible button must work.
 
 ```mermaid
 flowchart TD
-    A[Button Click] --> B{Has required key?}
-    B -- SoSoValue panel, no key --> C[Show connect prompt / demo toast]
-    B -- SoDEX public --> D[Fetch testnet REST]
-    B -- Grok action, no key --> E[Show add Grok key message]
-    B -- OK --> F[Run fetch or AI call]
-    F --> G{Success?}
-    G -- Yes --> H[Render data + apiProof footer]
-    G -- No --> I[Toast error]
+    A[Button Click] --> B{Does Feature Exist?}
+    B -- Yes --> C[Run Real Action]
+    B -- No --> D[Disable Button or Remove It]
+    C --> E{Success?}
+    E -- Yes --> F[Show Toast Notification]
+    E -- No --> G[Show Error Toast]
 ```
 
+### Key Buttons
 
-
-
-| Button                     | Behavior                                  |
-| -------------------------- | ----------------------------------------- |
-| ⚙ Settings                 | Open modal for API keys                   |
-| Connect →                  | Save keys to sessionStorage · reload feed |
-| Latest / Hot / Featured    | Switch SoSoValue news endpoint            |
-| News category (nav)        | Filter `GET /news?category=`              |
-| SoSo hub (nav)             | `mainTab → soso`                          |
-| SoDEX terminal (nav)       | `mainTab → sodex`                         |
-| ETF / Macro / Sectors / …  | Load panel in Intelligence column         |
-| ✦ Generate Briefing        | Grok briefing from current feed           |
-| ✦ Analyze with Grok        | Per-article Grok analysis                 |
-| ✦ AI-enhance top 3 signals | Grok `scoreSignal` on top 3               |
-| ◎ Preview top signal on SoDEX | Jump to **SoDEX Terminal** tab · `vBTC_vUSDC` |
-| Open SoDEX terminal →      | From orderbook panel                      |
-| Signal card click          | Open linked article in intel panel        |
-
+| Button | Behavior |
+|---|---|
+| Connect API | Save keys and reload live data |
+| AI Briefing | Generate Grok market briefing |
+| Risk Assess | Run AI risk assessment on opportunity |
+| Committee | Run 4-agent investment committee |
+| Strategy | Generate trade strategy playbook |
+| Execute on SoDEX | Open SoDEX terminal with execution context |
+| Add to Watchlist | Save token to watchlist |
+| Research Copilot | Ask free-form question |
+| Narrative Scan | Run narrative rotation detection |
+| Build Portfolio | Generate AI portfolio allocation |
+| Build SSI Index | Design custom thematic index |
+| Prepare Order | Build EIP-712 signed order preview |
+| Export JSON | Download signal archive or order audit |
+| Judge Demo | Start guided 7-step demo wizard |
 
 ---
 
-## API Keys and Configuration
+## Environment Variables
 
+CryptoDesk is a client-side SPA. API keys are entered through the Settings modal and stored in `sessionStorage`. No `.env` file is required for basic operation.
 
-| Key            | Required for                          | Where to get                                        |
-| -------------- | ------------------------------------- | --------------------------------------------------- |
-| **SoSoValue**  | Live news, hub, intel panels          | [SoSoValue](https://sosovalue.com) developer portal |
-| **Grok (xAI)** | Briefings, analysis, signal enhance   | [x.ai](https://x.ai)                                |
-| **SoDEX**      | *Not required* for Wave 2 market data | Public REST on testnet                              |
+### Required API Keys
 
+| Key | Source | Purpose |
+|---|---|---|
+| SoSoValue API Key | [SoSoValue OpenAPI](https://openapi.sosovalue.com) | Market data, news, indices, ETFs |
+| Grok API Key | [xAI API](https://api.x.ai) | AI classification, agents, research |
 
-### Settings flow
+### Optional
 
-1. Open **Settings** (masthead).
-2. Paste SoSoValue key (required for live data panels).
-3. Paste Grok key (optional).
-4. Click **Connect →** → toast *“Connected — loading live data…”*
+| Key | Source | Purpose |
+|---|---|---|
+| SoDEX API Key | [SoDEX](https://sodex.com) | Authenticated execution actions (future) |
+
+### Environment URLs
+
+```text
+Testnet Spot:  https://testnet-gw.sodex.dev/api/v1/spot
+Testnet Perps: https://testnet-gw.sodex.dev/api/v1/perps
+
+Mainnet Spot:  https://mainnet-gw.sodex.dev/api/v1/spot
+Mainnet Perps: https://mainnet-gw.sodex.dev/api/v1/perps
+```
 
 ---
 
@@ -799,7 +799,7 @@ flowchart TD
 
 ```bash
 git clone https://github.com/Nanle-code/CryptoDesk.git
-cd CryptoDesk   # or cryptodesk-project/cryptodesk
+cd CryptoDesk
 npm install
 ```
 
@@ -814,29 +814,26 @@ npm run dev
 Open:
 
 ```text
-http://localhost:5173/CryptoDesk/
+http://localhost:5173
 ```
-
-(Vite `base` is `/CryptoDesk/` for GitHub Pages.)
 
 ---
 
-## Build and Deploy
+## Build
 
 ```bash
-npm run build    # output → dist/
-npm run preview  # local preview of production build
+npm run build
 ```
 
-### GitHub Pages
+Build output is written to `dist/`.
 
-The repo uses `.github/workflows/deploy.yml` to build `cryptodesk/` and publish `dist/` to GitHub Pages.
+---
 
-**Live URL:** [https://nanle-code.github.io/CryptoDesk/index.html](https://nanle-code.github.io/CryptoDesk/index.html)
+## Preview Production Build
 
-### Other hosts
-
-Deploy the contents of `dist/` to any static host (Netlify, Vercel, S3, etc.). Set the site base path to `/CryptoDesk/` or adjust `vite.config.js` `base`.
+```bash
+npm run preview
+```
 
 ---
 
@@ -844,64 +841,160 @@ Deploy the contents of `dist/` to any static host (Netlify, Vercel, S3, etc.). S
 
 ```text
 cryptodesk/
-├── index.html                 # Vite entry
+├── index.html
+├── vite.config.js
 ├── package.json
-├── vite.config.js             # base: /CryptoDesk/
-├── README.md
-├── docs/
-│   ├── WAVE2_SUBMISSION.md    # AKINDO copy-paste text
-│   └── ROADMAP.md
-├── legacy/                    # Wave 1 vanilla HTML (archived)
+├── netlify.toml
+├── manifest.json
+│
 ├── src/
-│   ├── App.jsx                # Shell: Nav + MainWorkspace + Intel
 │   ├── main.jsx
+│   ├── App.jsx
+│   │
 │   ├── api/
-│   │   ├── sosovalue.js       # createSoSoClient — full OpenAPI surface
-│   │   ├── sodex.js           # sodexSpot public REST
-│   │   └── grok.js            # GrokAPI briefings + analysis
+│   │   ├── sosovalue.js          # SoSoValue OpenAPI v1 client
+│   │   ├── sodex.js              # SoDEX Spot REST API v1 client
+│   │   ├── grok.js               # Grok 2 AI agent layer
+│   │   └── claude.js             # Claude API client (optional)
+│   │
 │   ├── components/
-│   │   ├── MainWorkspace.jsx  # Tabs: News | SoSo Hub | SoDEX
-│   │   ├── SoSoDashboard.jsx  # 8 parallel SoSoValue calls
-│   │   ├── SoDEXTerminal.jsx  # Orderbook + trades terminal
-│   │   ├── NewsFeed.jsx
-│   │   ├── Nav.jsx            # SoSoValue × SoDEX navigation
-│   │   ├── IntelligencePanel.jsx
-│   │   ├── Masthead.jsx
-│   │   ├── TrustBar.jsx
-│   │   ├── SignalList.jsx
-│   │   ├── SettingsModal.jsx
-│   │   └── …
+│   │   ├── Masthead.jsx          # Top bar — logo, tickers, AI briefing
+│   │   ├── TrustBar.jsx          # Stats bar — articles, signals, sentiment
+│   │   ├── Nav.jsx               # Left navigation — categories, panels
+│   │   ├── MainWorkspace.jsx     # Center — news feed, SoSo hub, SoDEX
+│   │   ├── IntelligencePanel.jsx # Right — all intelligence panels
+│   │   ├── NewsFeed.jsx          # News article list
+│   │   ├── SignalList.jsx        # AI-classified signal cards
+│   │   ├── OpportunityList.jsx   # Ranked opportunity cards
+│   │   ├── SoDEXTerminal.jsx     # SoDEX market data terminal
+│   │   ├── SoSoDashboard.jsx     # SoSoValue Hub — 8 data panels
+│   │   ├── KlineChartPanel.jsx   # Kline chart container
+│   │   ├── MiniKlineChart.jsx    # Compact kline chart renderer
+│   │   ├── OrderExecutionScaffold.jsx # EIP-712 order builder
+│   │   ├── ExecutionPreviewCard.jsx   # Bound execution preview
+│   │   ├── WatchlistPanel.jsx    # Token watchlist with alerts
+│   │   ├── NarrativePanel.jsx    # Narrative rotation display
+│   │   ├── PortfolioPanel.jsx    # Portfolio allocation display
+│   │   ├── SSIIndexPanel.jsx     # SSI index builder + live data
+│   │   ├── StrategyPanel.jsx     # Strategy playbook display
+│   │   ├── ResearchCopilot.jsx   # Free-form research Q&A
+│   │   ├── SignalArchivePanel.jsx # Signal history + export
+│   │   ├── OrderAuditPanel.jsx   # Order audit trail + export
+│   │   ├── SettingsModal.jsx     # API key configuration
+│   │   ├── DemoWizard.jsx        # Judge demo — 7-step wizard
+│   │   ├── Background.jsx        # Animated background
+│   │   ├── Toast.jsx             # Toast notification
+│   │   └── VirtualList.js        # Virtualized list renderer
+│   │
 │   ├── context/
-│   │   └── ConfigContext.jsx  # sessionStorage keys
+│   │   └── ConfigContext.jsx     # Global config, API keys, toast
+│   │
 │   ├── hooks/
-│   │   ├── useNews.js
-│   │   └── useTickers.js
+│   │   ├── useNews.js            # News fetching + signal classification
+│   │   └── useTickers.js         # Masthead ticker data
+│   │
 │   ├── lib/
-│   │   ├── api.js             # sosoFetch, apiProof
-│   │   ├── signals.js         # Lexicon engine
-│   │   ├── format.js
-│   │   └── mockNews.js        # Demo mode only
+│   │   ├── signals.js            # Opportunity builder + merge logic
+│   │   ├── aiSignals.js          # Grok signal classification
+│   │   ├── explainability.js     # Opportunity explainability engine
+│   │   ├── executionPreview.js   # Execution context builder
+│   │   ├── watchlist.js          # Watchlist logic + alerts + intel
+│   │   ├── ssiIndex.js           # SSI reference fetcher + merge
+│   │   ├── signalArchive.js      # Signal archive persistence
+│   │   ├── sodexExecution.js     # SoDEX order builder + audit
+│   │   ├── sodexSymbol.js        # Asset → SoDEX symbol mapper
+│   │   ├── klineChart.js         # Kline chart rendering logic
+│   │   ├── klineData.js          # Kline data normalization
+│   │   ├── currencyLookup.js     # Currency ID resolution
+│   │   ├── demoWizard.js         # Demo step definitions
+│   │   ├── mockNews.js           # Demo mode fallback data
+│   │   ├── parseGrokJson.js      # Safe JSON parser for Grok
+│   │   ├── format.js             # Number formatting utilities
+│   │   └── api.js                # SoSoValue fetch wrapper
+│   │
+│   ├── utils/
+│   │   ├── format.js             # Display formatting helpers
+│   │   └── intelligence.js       # Intelligence computation
+│   │
+│   ├── core/
+│   │   ├── app.js                # Core application logic
+│   │   ├── state.js              # State management
+│   │   └── motion.js             # Animation engine
+│   │
 │   └── styles/
-│       └── app.css            # Dark cyber-fintech design system
-└── dist/                      # Production build (generated)
+│       ├── design-system.css     # Design tokens + CSS variables
+│       ├── app.css               # Application layout styles
+│       ├── components.css        # Component-level styles
+│       └── animations.css        # Micro-animation definitions
+│
+├── public/
+│   └── manifest.json
+│
+├── docs/
+│   ├── ROADMAP.md
+│   ├── WAVE2_SUBMISSION.md
+│   └── WAVE3_SUBMISSION.md
+│
+├── dist/                         # Production build output
+└── legacy/                       # Previous version files
+```
+
+---
+
+## Component Architecture
+
+```mermaid
+flowchart TD
+    A[App] --> B[ConfigProvider]
+    B --> C[Terminal]
+
+    C --> D[Background]
+    C --> E[Masthead]
+    C --> F[TrustBar]
+    C --> G[Nav]
+    C --> H[MainWorkspace]
+    C --> I[IntelligencePanel]
+    C --> J[SettingsModal]
+    C --> K[DemoWizard]
+    C --> L[Toast]
+
+    H --> M[NewsFeed]
+    H --> N[SoSoDashboard]
+    H --> O[SoDEXTerminal]
+
+    O --> P[KlineChartPanel]
+    O --> Q[OrderExecutionScaffold]
+    O --> R[ExecutionPreviewCard]
+
+    I --> S[SignalList]
+    I --> T[OpportunityList]
+    I --> U[ResearchCopilot]
+    I --> V[NarrativePanel]
+    I --> W[PortfolioPanel]
+    I --> X[SSIIndexPanel]
+    I --> Y[StrategyPanel]
+    I --> Z[WatchlistPanel]
+    I --> AA[SignalArchivePanel]
+    I --> AB[OrderAuditPanel]
 ```
 
 ---
 
 ## Safety Rules
 
-CryptoDesk follows these rules for hackathon integrity:
+CryptoDesk follows these rules:
 
-1. **No mock data when live panels claim to be live** — macro, ETF, sectors, treasuries require a SoSoValue key.
-2. **Demo mode is explicit** — toast + `mockNews()` only for the news feed without a key.
-3. **API proof on panels** — endpoint string + UTC time on data blocks.
-4. **No silent fallback** — failed API calls show errors, not fake numbers.
-5. **No wallet required** for Wave 2.
-6. **No order execution** on SoDEX in Wave 2 — preview only.
-7. **No auto-trading.**
-8. **Keys stay in sessionStorage** — never committed to the repo.
-9. **Grok is labeled** — AI briefings are clearly Grok-generated, not SoSoValue.
-10. **Honest submission copy** — see `docs/WAVE3_SUBMISSION.md`.
+1. No mock market data in production mode.
+2. No fake dashboard metrics.
+3. No seeded signals or opportunities.
+4. No silent API fallback — errors are always surfaced.
+5. No wallet required before analysis.
+6. No mainnet execution by default — SoDEX testnet only.
+7. No auto-execution — all orders require manual preparation.
+8. API keys stored in sessionStorage — never persisted to disk.
+9. All AI outputs labeled as AI-generated.
+10. All user inputs validated before API calls.
+11. All errors shown via toast notifications.
 
 ---
 
@@ -910,21 +1003,80 @@ CryptoDesk follows these rules for hackathon integrity:
 ```mermaid
 flowchart TD
     A[API Request] --> B{Success?}
-    B -- Yes --> C[unwrapData + render]
-    B -- No --> D{Error type}
+    B -- Yes --> C[Process + Display Data]
+    B -- No --> D{Error Type}
 
-    D --> E[No SoSoValue key]
-    D --> F[SoSoValue HTTP / code ≠ 0]
-    D --> G[SoDEX network error]
-    D --> H[Grok 401 / rate limit]
+    D --> E[Missing API Key]
+    D --> F[API Timeout]
+    D --> G[Rate Limited]
+    D --> H[Invalid Response]
+    D --> I[Network Error]
 
-    E --> I[Demo news OR connect prompt]
-    F --> J[feed-status error / panel error]
-    G --> K[hub-error / sodex error banner]
-    H --> L[Toast: Grok error]
+    E --> J[Toast: Add key in Settings]
+    F --> K[Toast: Try again later]
+    G --> L[Toast: Rate limited]
+    H --> M[Toast: Parse error]
+    I --> N[Toast: Network error]
 ```
 
+---
 
+## Empty States
+
+| State | Behavior |
+|---|---|
+| No API keys | Demo mode with sample data; toast prompts to connect |
+| No Grok key | AI features disabled; lexicon signals only |
+| No signals yet | Loading indicator during Grok classification |
+| No watchlist | Empty state with "Add tokens" prompt |
+| No archive | Empty state with explanation |
+| API failure | Error toast with specific message |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | React 19 |
+| Build Tool | Vite 6 |
+| AI Model | Grok 2 (xAI) |
+| Market Data | SoSoValue OpenAPI v1 |
+| Exchange Data | SoDEX Spot REST API v1 |
+| Styling | Vanilla CSS + CSS Variables |
+| Typography | Inter + JetBrains Mono (Google Fonts) |
+| Hosting | Netlify |
+| Storage | sessionStorage + localStorage |
+| State Management | React hooks + Context API |
+
+---
+
+## Business Model
+
+```mermaid
+flowchart TD
+    A[CryptoDesk Business Model] --> B[Free Terminal]
+    A --> C[Pro Researcher]
+    A --> D[Fund Manager]
+    A --> E[Community Plan]
+    A --> F[API Access]
+
+    B --> G[Basic news + lexicon signals]
+    C --> H[Full AI agent suite + SoDEX execution]
+    D --> I[Portfolio management + committee reviews]
+    E --> J[Signal group integrations]
+    F --> K[Programmatic intelligence API]
+```
+
+### Pricing Plan Ideas
+
+| Plan | Target User | Example Price |
+|---|---|---|
+| Free | Beginners | Free |
+| Pro Researcher | Active traders | $29/month |
+| Fund Manager | Serious portfolio managers | $99/month |
+| Community | Signal groups | $399/month |
+| API | Bots, wallets, DeFi apps | Usage-based |
 
 ---
 
@@ -934,139 +1086,98 @@ flowchart TD
 timeline
     title CryptoDesk Roadmap
 
-    section Wave 1 — Done
-        Live news feed : SoSoValue /news
-        Grok briefings : xAI integration
-        Vanilla SPA : legacy/index.html
+    section Wave 1–3 — Shipped
+      News Feed : SoSoValue live data
+      AI Signals : Grok auto-classification
+      Opportunities : Explainability engine
+      Committee : Multi-agent review
+      SoDEX Terminal : Market data + order builder
+      Portfolio + SSI : AI portfolio + index builder
+      Demo Wizard : Judge walkthrough
 
-    section Wave 2 — Done
-        React terminal : Vite + React 19
-        SoSoValue Hub : 8+ endpoints
-        SoDEX terminal : Public testnet REST
+    section Next
+      Live Execution : Signed SoDEX orders
+      Push Alerts : Watchlist notifications
+      PDF Reports : Exportable intelligence reports
+      Multi-Model : Claude + GPT support
 
-    section Wave 3 — Current
-        Opportunity engine : Discovery + explainability
-        AI agents : Committee · Copilot · Portfolio · SSI · Strategy
-        Auto Grok classify : Top 5 on feed load
-        Execution preview : SoDEX bound card
-        Judge demo wizard : 7-step guided flow
-        Watchlist : Sentiment + narrative alerts
-        Signal archive : Session history + JSON export
-        Kline charts : SoDEX + SoSo dual panel
-
-    section Wave 4 — Current
-        Order scaffold : EIP-712 POST preview
-        Order audit : Session log + JSON export
-        Live POST : Requires SoDEX SDK + key
+    section Future
+      Wallet Accounts : Persistent user profiles
+      Team Workspaces : Shared research + signals
+      Mobile App : React Native terminal
+      Plugin System : Community agent marketplace
 ```
-
-
 
 ---
 
-## Demo Flow for Judges
+## Judge Demo
 
-**Fastest path:** Left nav → **🏁 Judge demo** → click **Run this step** through all 7 steps (connect → explainability).
-
-Use **DevTools → Network** open to verify `openapi.sosovalue.com`, `api.x.ai`, and `testnet-gw.sodex.dev`.
+CryptoDesk includes a built-in 7-step judge demo wizard accessible from the left navigation bar.
 
 ```mermaid
 flowchart TD
-    A[🏁 Judge demo wizard] --> B[0 Connect · Settings]
-    B --> C[1 News feed · GET /news]
-    C --> D[2 AI signals · Grok auto-classify]
-    D --> E[3 Opportunities · Why/Risks]
-    E --> F[4 Investment committee]
-    F --> G[5 Portfolio agent]
-    G --> H[6 SoDEX execution preview card]
-    H --> I[7 Explainability bullets]
+    A["Start Judge Demo"] --> B["Step 1: Open Settings"]
+    B --> C["Step 2: News Feed"]
+    C --> D["Step 3: Signals"]
+    D --> E["Step 4: Opportunities"]
+    E --> F["Step 5: Committee Review"]
+    F --> G["Step 6: Portfolio Agent"]
+    G --> H["Step 7: Execution Preview"]
 ```
 
-### Legacy 60-second script (Wave 2 panels still work)
+Each step navigates the terminal to the relevant panel and triggers the appropriate action. Toasts confirm progress.
 
-```mermaid
-flowchart TD
-    A[Live demo URL] --> B[⚙ Settings · Connect →]
-    B --> C[News feed tab · Latest]
-    C --> D[Verify GET /news code 0]
-    D --> E[🔥 Opportunities panel]
-    E --> F[Committee + Execution preview]
-    F --> G[SoDEX tab · vETH_vUSDC depth]
-    G --> H[SoSoValue Hub · 8 parallel GETs]
-    H --> I[Generate Briefing · Grok]
-```
+---
 
-### What to verify
+## Links
 
-| Check | Pass criteria |
-|-------|----------------|
-| SoSoValue auth | `openapi.sosovalue.com` · `code: 0` on `/news` |
-| Hub load | 8 requests when opening **SoSoValue Hub** tab |
-| Intel panels | ETF / macro / sector JSON matches UI (not static HTML) |
-| SoDEX (no key) | `testnet-gw.sodex.dev/api/v1/spot/...` succeeds without SoDEX key |
-| Signals | Trust bar **Signals** count > 0 when news has strong headlines |
-| Agent CTA | **🏁 Judge demo** runs full data-to-decision path |
-| Wave 3 | Opportunities · Committee · Execution preview card · Explainability |
-| Honesty | `nextstep.md` + `docs/WAVE3_SUBMISSION.md` match UI |
+- **Live Demo:** [https://cryptodesk-terminal.netlify.app](https://cryptodesk-terminal.netlify.app)
+- **GitHub:** [https://github.com/Nanle-code/CryptoDesk](https://github.com/Nanle-code/CryptoDesk)
+- **Strategy Doc:** `nextstep.md` in repo root
+- **Roadmap:** `docs/ROADMAP.md`
 
 ---
 
 ## Quality Checklist
 
-### Wave 3 (shipped)
-
-- [x] Auto Grok signal classification (top 5 on load)
-- [x] Opportunity discovery engine + auto Why? / Risks
-- [x] Investment committee (4 agents)
-- [x] Unified SoDEX execution preview card
-- [x] Research copilot · Narratives · Watchlist (sentiment + narrative)
-- [x] Portfolio agent · SSI index builder (live constituents)
-- [x] Strategy generator (any opportunity)
-- [x] Judge demo wizard (7 steps)
-- [x] Persistent signal archive (sessionStorage + export)
-- [x] Kline charts — SoDEX candles + SoSoValue area (1H / 4H / 1D)
-- [x] EIP-712 order execution scaffold (Prepare signed order on SoDEX tab)
-- [x] Order audit log panel (left nav · SoDEX section)
-
-### Wave 2 (shipped)
-
-- [x] React 19 + Vite terminal · three-column layout
-- [x] Center tabs: News feed · SoSoValue Hub · SoDEX Terminal
-- [x] SoSoValue news (`/news`, `/hot`, `/featured`) + category filters
-- [x] SoSoValue Hub (8 parallel endpoints on tab open)
-- [x] Live masthead tickers (currencies + market-snapshot)
-- [x] Intel panels: macro, sectors, dual ETF, indices, treasuries, fundraising, SoDEX snapshot
-- [x] Lexicon signal engine + **⚡ Signal feed** + **◎ Preview on SoDEX** CTA
-- [x] Grok: briefing, article analysis, top-3 signal enhance
-- [x] SoDEX terminal: symbols, tickers, orderbook, trades (15s refresh, no key)
-- [x] **⟳ Agent workflow** panel + API proof footers
+- [x] All panels load correctly
+- [x] Navigation links work
+- [x] SoSoValue integration connected — news, tickers, sectors, ETFs, indices, treasuries, fundraising, macro
+- [x] SoDEX integration connected — tickers, orderbook, klines, trades, bookTickers
+- [x] Grok AI classification works on feed load
+- [x] Opportunity explainability (Why? / Risks) renders automatically
+- [x] Investment committee returns structured multi-agent verdict
+- [x] Portfolio agent generates allocations from live feed
+- [x] SSI index builder aligns with live SoSoValue indices
+- [x] Narrative rotation scanner detects current vs emerging themes
+- [x] Strategy generator creates playbooks from opportunities
+- [x] Research copilot answers free-form questions
+- [x] SoDEX terminal shows execution preview card
+- [x] Dual kline charts load on SoDEX tab
+- [x] EIP-712 order builder generates JSON + typed data + cURL
+- [x] Watchlist alerts fire on high-severity signals
+- [x] Signal archive persists across tab lifecycle
+- [x] Order audit trail tracks prepared orders
+- [x] Export JSON works for archive and audit
+- [x] Judge demo wizard navigates all 7 steps
+- [x] App is responsive on mobile
 - [x] `npm run build` passes
-- [ ] Final demo video (Network tab visible)
-
-### Engineering checklist
-
-- All nav tools load correct panel or tab
-- No mock data in SoSoValue panels when key is connected
-- Demo mode only affects news feed without key
-- SoDEX works without SoDEX key
-- Signal → SoDEX CTA opens terminal tab
-- Mobile layout acceptable
-- README matches live behavior
+- [x] No mock data in production mode
 
 ---
 
 ## Disclaimer
 
-CryptoDesk Terminal is a **market intelligence and decision-support tool** for research and education.
+CryptoDesk is a market intelligence and research tool.
 
-It does **not** provide financial advice. Signals, briefings, and AI outputs are informational. Users are responsible for their own trading decisions. SoDEX execution preview does not place orders in Wave 2.
+It does not provide financial advice.
+
+AI-generated signals, opportunities, committee reviews, and portfolio allocations are designed to help users understand market conditions and potential trade ideas. Users remain fully responsible for their own trading decisions.
+
+All SoDEX execution features operate in testnet/preview mode by default. No real trades are executed.
 
 ---
 
 ## One-Line Summary
 
-**CryptoDesk Terminal is a SoSoValue-powered intelligence workstation that scores live news into signals, explains markets with Grok AI, and previews SoDEX orderbook depth before execution — built for the SoSoValue Buildathon Wave 2.**
-
----
-
-*Powered by [SoSoValue](https://sosovalue.com) · [SoDEX](https://sodex.com) · [Grok / xAI*](https://x.ai)
+**CryptoDesk is an AI-powered on-chain intelligence terminal that connects SoSoValue market data, Grok AI classification, multi-agent investment committee reviews, and SoDEX execution previews into a single data-to-decision workflow — all client-side, no backend required.**

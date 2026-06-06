@@ -20,11 +20,11 @@ Solo crypto researchers and retail traders who need one screen for news, flows, 
 
 1. Open live demo → **Settings** → enter SoSoValue + Grok API keys → **Connect**
 2. **Latest** news loads from `GET /news` (verify in DevTools → Network)
-3. Click **⚡ Signal Feed** → headlines scored (sentiment, strength 1–5, asset)
+3. Click ** Signal Feed** → headlines scored (sentiment, strength 1–5, asset)
 4. Click **₿ ETF Flow Monitor** → live `GET /etfs/summary-history?symbol=BTC&country_code=US`
 5. Click **⊡ Macro Calendar** → `GET /macro/events`
 6. Click **◈ Sector Spotlight** → `GET /currencies/sector-spotlight`
-7. Click **✦ Generate Briefing** → Grok structured report from the same feed
+7. Click ** Generate Briefing** → Grok structured report from the same feed
 8. Click **⟳ Agent Workflow** → shows ingest → analyze → signal → preview → execute (W3)
 9. Optional: **◎ SoDEX Preview** with testnet API key (read-only markets)
 

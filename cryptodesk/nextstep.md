@@ -1,28 +1,28 @@
 # CryptoDesk Wave 3 Strategy & Product Roadmap
 
-> **Implementation status (June 2026):** Milestones **M1–M13** are shipped. **Live SoDEX POST** uses an EIP-712 order scaffold (prepare → sign preview → curl) — no orders are sent from the browser. Use **🏁 Judge demo** for the guided 7-step judge flow.
+> **Implementation status (June 2026):** Milestones **M1–M13** are shipped. **Live SoDEX POST** uses an EIP-712 order scaffold (prepare → sign preview → curl) — no orders are sent from the browser. Use ** Judge demo** for the guided 7-step judge flow.
 
 | Milestone | Feature | Status |
 |-----------|---------|--------|
-| M1 | AI signal classification (Grok top 5 on load) | ✅ Shipped |
-| M2 | Opportunity discovery engine | ✅ Shipped |
-| M3 | Investment committee (4 agents) | ✅ Shipped |
-| M4 | Research copilot | ✅ Shipped |
-| M5 | Auto explainability (Why? / Risks) | ✅ Shipped |
-| M6 | Narrative tracking | ✅ Shipped |
-| M7 | Portfolio agent | ✅ Shipped |
-| M8 | Daily briefing (Grok) | ✅ Shipped (Wave 2) |
-| M9 | Watchlist + sentiment + narrative alerts | ✅ Shipped |
-| M10 | SoDEX terminal (public REST) | ✅ Shipped (Wave 2) |
-| M11 | SSI index builder + live constituents | ✅ Shipped |
-| M12 | Unified execution preview card | ✅ Shipped |
-| M13 | Strategy generator (any opportunity) | ✅ Shipped |
-| — | Live SoDEX signed orders | ⚠️ Scaffold (EIP-712 preview; no live POST) |
-| — | Judge demo wizard (steps 1–7) | ✅ Shipped |
-| — | Persistent signal archive (session) | ✅ Shipped |
-| — | Kline charts (SoDEX + SoSoValue) | ✅ Shipped |
-| — | EIP-712 order execution scaffold | ✅ Shipped |
-| — | Order audit log panel | ✅ Shipped |
+| M1 | AI signal classification (Grok top 5 on load) |  Shipped |
+| M2 | Opportunity discovery engine |  Shipped |
+| M3 | Investment committee (4 agents) |  Shipped |
+| M4 | Research copilot |  Shipped |
+| M5 | Auto explainability (Why? / Risks) |  Shipped |
+| M6 | Narrative tracking |  Shipped |
+| M7 | Portfolio agent |  Shipped |
+| M8 | Daily briefing (Grok) |  Shipped (Wave 2) |
+| M9 | Watchlist + sentiment + narrative alerts |  Shipped |
+| M10 | SoDEX terminal (public REST) |  Shipped (Wave 2) |
+| M11 | SSI index builder + live constituents |  Shipped |
+| M12 | Unified execution preview card |  Shipped |
+| M13 | Strategy generator (any opportunity) |  Shipped |
+| — | Live SoDEX signed orders |  Scaffold (EIP-712 preview; no live POST) |
+| — | Judge demo wizard (steps 1–7) |  Shipped |
+| — | Persistent signal archive (session) |  Shipped |
+| — | Kline charts (SoDEX + SoSoValue) |  Shipped |
+| — | EIP-712 order execution scaffold |  Shipped |
+| — | Order audit log panel |  Shipped |
 
 ## Vision
 
@@ -49,31 +49,31 @@ CryptoDesk directly aligns with:
 
 ### Required
 
-✅ SoSoValue API Integration
+ SoSoValue API Integration
 
-✅ Clear User Value
+ Clear User Value
 
-✅ Complete Data-to-Decision Flow
+ Complete Data-to-Decision Flow
 
-✅ Verifiable Demo
+ Verifiable Demo
 
-✅ Documentation
+ Documentation
 
 ### Bonus
 
-✅ SoDEX Integration
+ SoDEX Integration
 
-✅ AI-Powered Analysis
+ AI-Powered Analysis
 
-✅ Opportunity Discovery
+ Opportunity Discovery
 
-✅ Strategy Assistant
+ Strategy Assistant
 
-✅ Risk Control
+ Risk Control
 
-✅ Decision Support
+ Decision Support
 
-✅ Research-to-Execution Workflow
+ Research-to-Execution Workflow
 
 ---
 
@@ -145,7 +145,7 @@ Keyword Scoring
 
 Future:
 
-~~AI-Powered Classification~~ **✅ Shipped** — Grok auto-classifies top 5 on feed load
+~~AI-Powered Classification~~ ** Shipped** — Grok auto-classifies top 5 on feed load
 
 Output:
 
@@ -266,7 +266,7 @@ Positive ETF News
 
 Output
 
-🔥 Opportunity
+ Opportunity
 
 Asset:
 ETH
@@ -739,7 +739,7 @@ Step 3
 
 Opportunity Engine
 
-🔥 Opportunity Detected
+ Opportunity Detected
 
 Asset:
 ETH

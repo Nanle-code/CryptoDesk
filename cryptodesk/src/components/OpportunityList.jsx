@@ -178,7 +178,7 @@ export default function OpportunityList({
                   disabled={strategyLoading}
                   onClick={() => onGenerateStrategy(op)}
                 >
-                  {strategyLoading ? 'Strategy…' : hasStrategy ? '📋 Strategy ✓' : '📋 Strategy'}
+                  {strategyLoading ? 'Strategy…' : hasStrategy ? ' Strategy ' : ' Strategy'}
                 </button>
               )}
               {typeof onOpenSoDEX === 'function' && (

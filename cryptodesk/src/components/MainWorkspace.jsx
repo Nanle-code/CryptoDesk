@@ -46,7 +46,7 @@ export default function MainWorkspace(props) {
                   className={`feed-tab ${props.tab === t ? 'active' : ''}`}
                   onClick={() => props.onTab(t)}
                 >
-                  {t === 'hot' ? '🔥 Hot' : t === 'featured' ? '★ Featured' : 'Latest'}
+                  {t === 'hot' ? ' Hot' : t === 'featured' ? ' Featured' : 'Latest'}
                 </button>
               ))}
             </div>

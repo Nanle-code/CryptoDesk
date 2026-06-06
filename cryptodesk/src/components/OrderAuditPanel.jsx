@@ -51,7 +51,7 @@ export default function OrderAuditPanel({ audit, onClear, onOpenSoDEX }) {
             className={`archive-row ${entry.side === 'SELL' ? 'bearish' : 'bullish'}`}
           >
             <div className="archive-row-head">
-              <span className="archive-type">📋</span>
+              <span className="archive-type"></span>
               <span className="archive-asset">{entry.symbol}</span>
               <span className="archive-meta">
                 {entry.side} · {entry.type}

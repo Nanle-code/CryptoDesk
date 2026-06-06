@@ -9,8 +9,16 @@ export function timeAgo(ts) {
   return `${Math.floor(s / 86400)}d ago`;
 }
 
+export function ensureString(v, def = '') {
+  if (v == null) return def;
+  if (typeof v === 'string') return v;
+  if (typeof v === 'object') return v.en || v.localized_name || v.name || JSON.stringify(v);
+  return String(v);
+}
+
 export function stripHtml(h) {
-  return (h || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const s = ensureString(h);
+  return s.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 export function fmtPrice(n) {

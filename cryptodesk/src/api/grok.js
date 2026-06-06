@@ -1,13 +1,15 @@
 import { parseGrokJson } from '../lib/parseGrokJson';
 import { formatReferenceForGrok } from '../lib/ssiIndex';
+import { ensureString } from '../lib/format';
 
 const GROK_BASE = 'https://api.x.ai/v1/chat/completions';
 const GROK_MODEL = 'grok-2';
 
 function feedHeadlines(newsItems, limit = 18, contentLen = 120) {
   return (newsItems || []).slice(0, limit).map((n) => {
-    const plain = (n.content || '').replace(/<[^>]+>/g, ' ').slice(0, contentLen);
-    return `• ${n.title}${plain ? ' — ' + plain : ''}`;
+    const title = ensureString(n.title);
+    const plain = ensureString(n.content).replace(/<[^>]+>/g, ' ').slice(0, contentLen);
+    return `• ${title}${plain ? ' — ' + plain : ''}`;
   }).join('\n');
 }
 
@@ -17,6 +19,9 @@ export class GrokAPI {
   }
 
   async complete(systemPrompt, userPrompt, maxTokens = 1000) {
+    if (!this.apiKey) throw new Error('Grok API key missing');
+    if (!systemPrompt || !userPrompt) throw new Error('Grok prompt cannot be empty');
+
     const res = await fetch(GROK_BASE, {
       method: 'POST',
       headers: {
@@ -33,7 +38,19 @@ export class GrokAPI {
         ],
       }),
     });
-    if (!res.ok) throw new Error(`Grok API ${res.status}`);
+
+    if (!res.ok) {
+      let msg = `Grok API ${res.status}`;
+      try {
+        const err = await res.json();
+        if (err?.error?.message) msg = `Grok: ${err.error.message}`;
+        else if (err?.message) msg = `Grok: ${err.message}`;
+      } catch {
+        /* fallback to status code */
+      }
+      throw new Error(msg);
+    }
+
     const data = await res.json();
     return data.choices?.[0]?.message?.content || '';
   }
@@ -41,15 +58,17 @@ export class GrokAPI {
   async generateBriefing(newsItems, focusTopic = '') {
     const system = `You are CryptoDesk, an on-chain finance analyst powered by SoSoValue data. Write institutional-grade briefings. No filler.`;
     const headlines = newsItems.slice(0, 20).map((n) => {
-      const plain = (n.content || '').replace(/<[^>]+>/g, ' ').slice(0, 150);
-      return `• ${n.title}${plain ? ' — ' + plain : ''}`;
+      const title = ensureString(n.title);
+      const plain = ensureString(n.content).replace(/<[^>]+>/g, ' ').slice(0, 150);
+      return `• ${title}${plain ? ' — ' + plain : ''}`;
     }).join('\n');
     const user = `Feed (${newsItems.length} articles):\n${headlines}\n${focusTopic ? `Focus: ${focusTopic}` : ''}\n\nSections: EXECUTIVE SUMMARY, MARKET SIGNALS, SECTOR SPOTLIGHT, RISK WATCH, 24H CALL. Max 300 words.`;
     return this.complete(system, user, 1000);
   }
 
   async classifySignal(newsItem) {
-    const content = (newsItem.content || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const title = ensureString(newsItem.title);
+    const content = ensureString(newsItem.content).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     const system = `You are CryptoDesk, an institutional-grade crypto signal classifier. Return only a JSON object with no extra text.`;
     const user = `Analyze this news item and return ONLY a JSON object with these keys:\n{\n  "sentiment": "bullish|bearish|neutral",\n  "confidence": 0-100,\n  "affected_assets": ["ETH","BTC"],\n  "impact": "high|medium|low",\n  "time_horizon": "short|medium|long",\n  "recommendation": "Buy|Sell|Hold",\n  "risk": "Low|Medium|High",\n  "reason": "One concise sentence explaining the signal."\n}\nTitle: ${newsItem.title}\nContent: ${content}`;
     const raw = await this.complete(system, user, 250);
@@ -66,7 +85,8 @@ export class GrokAPI {
   }
 
   async assessOpportunity(newsItem, recommendation = 'Hold', reason = '') {
-    const content = (newsItem.content || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const title = ensureString(newsItem.title);
+    const content = ensureString(newsItem.content).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     const system = `You are CryptoDesk, a risk assessment agent. Return only a JSON object with no extra text.`;
     const user = `Assess the risk of this crypto opportunity and return ONLY a JSON object with these keys:\n{\n  "risk": "Low|Medium|High",\n  "risk_drivers": ["...", "..."],\n  "conviction": 0-100,\n  "explanation": "One concise sentence.",\n  "mitigation": "One sentence risk control advice.\n"}\nTitle: ${newsItem.title}\nContent: ${content}\nRecommendation: ${recommendation}\nReason: ${reason}`;
     const raw = await this.complete(system, user, 250);
@@ -170,7 +190,8 @@ export class GrokAPI {
   }
 
   async generateStrategy(newsItem, opportunity = {}) {
-    const content = (newsItem?.content || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const title = ensureString(newsItem?.title || 'Market strategy');
+    const content = ensureString(newsItem?.content).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     const whyBlock = opportunity.why?.length
       ? `\nWhy bullets: ${opportunity.why.join('; ')}`
       : '';

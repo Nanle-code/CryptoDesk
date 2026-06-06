@@ -214,7 +214,7 @@
               const label = (s.name || '').replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
               return `
                 <div class="sector-item">
-                  <div class="sector-name">${window.escH(label)}${s._spot ? ' ★' : ''}</div>
+                  <div class="sector-name">${window.escH(label)}${s._spot ? ' ' : ''}</div>
                   <div class="sector-bar-wrap"><div class="sector-bar" style="width:${barW}%;background:${up ? 'var(--bull)' : 'var(--bear)'}"></div></div>
                   <div class="sector-chg" style="color:${up ? 'var(--bull)' : 'var(--bear)'}">${fmtPct(chg)}</div>
                 </div>`;
@@ -313,13 +313,13 @@
 
     document.getElementById('intelBody').innerHTML = `
       <div class="intel-block">
-        <div class="intel-block-label">⚡ Agentic signals · strength ≥2</div>
+        <div class="intel-block-label"> Agentic signals · strength ≥2</div>
         <div class="intel-block-body">
           ${renderSignalList(signalCache, 12)}
           <p class="report-p" style="font-size:11px;margin-top:10px;color:var(--ink-dim);">Scored from live SoSoValue headlines. Add Grok for article-level AI analysis.</p>
         </div>
       </div>
-      ${window.CFG?.claudeKey ? `<button class="briefing-trigger" style="width:100%;justify-content:center;margin-top:8px;color:var(--paper);background:var(--ink);" onclick="enhanceTopSignalsWithGrok()">✦ AI-enhance top 3 signals</button>` : ''}
+      ${window.CFG?.claudeKey ? `<button class="briefing-trigger" style="width:100%;justify-content:center;margin-top:8px;color:var(--paper);background:var(--ink);" onclick="enhanceTopSignalsWithGrok()"> AI-enhance top 3 signals</button>` : ''}
     `;
   }
 
@@ -446,7 +446,7 @@
       } catch (_) { /* keep lexicon */ }
     }
     showSignalFeed();
-    window.toast('✓ Signals enhanced');
+    window.toast(' Signals enhanced');
   }
 
   function install() {

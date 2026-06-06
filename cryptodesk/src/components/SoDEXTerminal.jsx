@@ -235,7 +235,7 @@ export default function SoDEXTerminal({ previewSymbol, executionContext, onSymbo
           <p className="report-p dim">
             Open an opportunity card → <strong>SoDEX</strong> to bind recommendation, allocation, and slippage to this terminal.
           </p>
-          <div className="wf-step done">✓ Opportunity → Committee / Risk → SoDEX depth</div>
+          <div className="wf-step done"> Opportunity → Committee / Risk → SoDEX depth</div>
           <div className="wf-step dim">○ Live POST requires SoDEX SDK signing (use scaffold above)</div>
         </div>
       )}

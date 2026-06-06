@@ -12,29 +12,29 @@ const SOSO_TOOLS = [
   { id: 'macro', label: 'Macro', icon: '⊡' },
   { id: 'sectors', label: 'Sectors', icon: '◈' },
   { id: 'indices', label: 'SSI indices', icon: '◆' },
-  { id: 'treasuries', label: 'BTC treasuries', icon: '🏦' },
-  { id: 'fundraising', label: 'Fundraising', icon: '🚀' },
+  { id: 'treasuries', label: 'BTC treasuries', icon: '' },
+  { id: 'fundraising', label: 'Fundraising', icon: '' },
 ];
 
 const SODEX_TOOLS = [
   { id: 'sodex-hub', label: 'SoDEX terminal', icon: '◎', action: 'tab:sodex' },
-  { id: 'order-audit', label: 'Order audit', icon: '📋' },
-  { id: 'sodex', label: 'Orderbook panel', icon: '📊' },
+  { id: 'order-audit', label: 'Order audit', icon: '' },
+  { id: 'sodex', label: 'Orderbook panel', icon: '' },
 ];
 
 const AI_TOOLS = [
-  { id: 'demo', label: 'Judge demo', icon: '🏁', action: 'demo' },
+  { id: 'demo', label: 'Judge demo', icon: '', action: 'demo' },
   { id: 'workflow', label: 'Agent workflow', icon: '⟳' },
-  { id: 'signals', label: 'Signal feed', icon: '⚡' },
-  { id: 'archive', label: 'Signal archive', icon: '📜' },
-  { id: 'opportunities', label: 'Opportunities', icon: '🔥' },
-  { id: 'copilot', label: 'Research copilot', icon: '🧠' },
+  { id: 'signals', label: 'Signal feed', icon: '' },
+  { id: 'archive', label: 'Signal archive', icon: '' },
+  { id: 'opportunities', label: 'Opportunities', icon: '' },
+  { id: 'copilot', label: 'Research copilot', icon: '' },
   { id: 'narratives', label: 'Narratives', icon: '↻' },
-  { id: 'watchlist', label: 'Watchlist', icon: '👁' },
-  { id: 'portfolio', label: 'Portfolio', icon: '📊' },
+  { id: 'watchlist', label: 'Watchlist', icon: '' },
+  { id: 'portfolio', label: 'Portfolio', icon: '' },
   { id: 'ssi-index', label: 'SSI index', icon: '◆' },
-  { id: 'strategy', label: 'Strategy', icon: '📋' },
-  { id: 'briefing', label: 'AI briefing', icon: '✦', action: 'briefing' },
+  { id: 'strategy', label: 'Strategy', icon: '' },
+  { id: 'briefing', label: 'AI briefing', icon: '', action: 'briefing' },
 ];
 
 const PANEL_IDS = [

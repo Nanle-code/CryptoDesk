@@ -74,7 +74,7 @@ export default function SignalArchivePanel({ archive, onClear, onSelectEntry }) 
             onClick={() => entry.sourceIndex >= 0 && onSelectEntry?.(entry.sourceIndex)}
           >
             <div className="archive-row-head">
-              <span className="archive-type">{entry.type === 'opportunity' ? '🔥' : '⚡'}</span>
+              <span className="archive-type">{entry.type === 'opportunity' ? '' : ''}</span>
               <span className="archive-asset">{entry.asset}</span>
               <span className="archive-meta">
                 {entry.recommendation || entry.sentiment}

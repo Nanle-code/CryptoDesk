@@ -167,7 +167,7 @@ export default function SSIIndexPanel({
                 <div className="allocation-header">
                   <strong>
                     {c.symbol}
-                    {c.liveMatch && <span className="ssi-match-tag">SSI ✓</span>}
+                    {c.liveMatch && <span className="ssi-match-tag">SSI </span>}
                   </strong>
                   <span>
                     {c.pct}%

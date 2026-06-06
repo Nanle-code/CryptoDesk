@@ -35,7 +35,7 @@ export default function StrategyPanel({
                 <span className="strategy-pick-meta">
                   {op.recommendation} · {op.confidence}%
                 </span>
-                {hasStrategy && <span className="strategy-pick-done">✓</span>}
+                {hasStrategy && <span className="strategy-pick-done"></span>}
                 {isLoading && <span className="strategy-pick-done">…</span>}
               </button>
             );
@@ -62,8 +62,8 @@ export default function StrategyPanel({
           : !active
             ? 'No opportunity selected'
             : result
-              ? '📋 Regenerate strategy'
-              : '📋 Generate strategy'}
+              ? ' Regenerate strategy'
+              : ' Generate strategy'}
       </button>
 
       {result && (

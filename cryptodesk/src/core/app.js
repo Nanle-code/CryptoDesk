@@ -51,7 +51,7 @@ class CryptoDeskApp {
     // Show welcome toast if no API key
     if (!this.state.getState().config.sosoKey) {
       setTimeout(() => {
-        this.showToast('Demo mode — click ⚙ Settings to connect SoSoValue API', 5000);
+        this.showToast('Demo mode — click  Settings to connect SoSoValue API', 5000);
       }, 1200);
     }
   }
@@ -323,7 +323,7 @@ class CryptoDeskApp {
         <div class="news-meta">
           <span class="news-source">${this.escapeHtml(item.nick_name || item.author || 'Source')}</span>
           <span class="news-category ${categoryClass}">${categoryName}</span>
-          ${item.is_blue_verified ? '<span class="news-verified">✓</span>' : ''}
+          ${item.is_blue_verified ? '<span class="news-verified"></span>' : ''}
           <span class="news-time">${timeAgo}</span>
         </div>
         <div class="news-title">${titleWithTickers}</div>
@@ -448,7 +448,7 @@ class CryptoDeskApp {
     banner.className = 'data-stale-banner';
     banner.innerHTML = `
       <div style="display: flex; align-items: center; gap: var(--space-2);">
-        <span>⚠</span>
+        <span></span>
         <span>Data Stale: ${this.escapeHtml(errorMessage)}</span>
       </div>
       <button class="btn" onclick="window.app.loadNews()">
@@ -541,7 +541,7 @@ Be specific, data-driven, institutional in tone. Max 300 words. No filler.`;
       const briefing = await this.callGrokAPI(prompt);
       this.state.setBriefing(briefing);
       this.renderBriefing(briefing);
-      this.showToast('✓ Intelligence briefing generated');
+      this.showToast(' Intelligence briefing generated');
     } catch (error) {
       console.error('Briefing generation failed:', error);
       this.showToast(`Grok Error: ${error.message}`);
@@ -549,7 +549,7 @@ Be specific, data-driven, institutional in tone. Max 300 words. No filler.`;
     } finally {
       if (btn) {
         btn.disabled = false;
-        btn.innerHTML = '✦ Generate Briefing';
+        btn.innerHTML = ' Generate Briefing';
       }
     }
   }
@@ -593,7 +593,7 @@ Be specific, data-driven, institutional in tone. Max 300 words. No filler.`;
     
     let html = `
       <div class="intel-block ai-generated">
-        <div class="intel-block-header">✦ Daily Intelligence · ${new Date().toUTCString().slice(0, 22)}</div>
+        <div class="intel-block-header"> Daily Intelligence · ${new Date().toUTCString().slice(0, 22)}</div>
         <div class="intel-block-body">
           <div class="report-title">AI Intelligence Report</div>
           <div class="report-byline">Powered by SoSoValue × Grok</div>
@@ -646,7 +646,7 @@ Be specific, data-driven, institutional in tone. Max 300 words. No filler.`;
 
     const html = `
       <div class="intel-block">
-        <div class="intel-block-header">📰 Article Detail</div>
+        <div class="intel-block-header"> Article Detail</div>
         <div class="intel-block-body">
           <div class="report-title">${this.escapeHtml(item.title || '')}</div>
           <div class="report-byline">${this.escapeHtml(item.nick_name || item.author || '')} · ${new Date(item.release_time).toUTCString().slice(0, 22)}</div>
@@ -656,7 +656,7 @@ Be specific, data-driven, institutional in tone. Max 300 words. No filler.`;
       </div>
       ${state.config.grokKey ? `
         <button class="btn btn-primary" style="width:100%;" onclick="app.analyzeArticle(${this.state.getState().news.indexOf(item)})">
-          ✦ Analyze with Grok
+           Analyze with Grok
         </button>
       ` : `<p style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--ink-50);text-align:center;letter-spacing:0.06em;text-transform:uppercase;padding:var(--space-4);">Add Grok key to enable AI analysis</p>`}
     `;
@@ -706,7 +706,7 @@ Be direct and specific. Max 120 words.`;
     try {
       const analysis = await this.callGrokAPI(prompt);
       this.renderArticleAnalysis(item, analysis);
-      this.showToast('✓ Analysis complete');
+      this.showToast(' Analysis complete');
     } catch (error) {
       console.error('Analysis failed:', error);
       this.showToast(`Grok Error: ${error.message}`);
@@ -724,7 +724,7 @@ Be direct and specific. Max 120 words.`;
 
     const html = `
       <div class="intel-block ai-generated">
-        <div class="intel-block-header">✦ Article Analysis — Grok</div>
+        <div class="intel-block-header"> Article Analysis — Grok</div>
         <div class="intel-block-body">
           <div class="report-title" style="font-size:var(--text-base);font-style:normal;">${this.escapeHtml(item.title)}</div>
           <div class="report-byline">${timeAgo} · AI Analysis</div>
@@ -879,7 +879,7 @@ Be direct and specific. Max 120 words.`;
     if (type === 'briefing') {
       intelBody.innerHTML = `
         <div class="intel-block">
-          <div class="intel-block-header">✦ Generating AI Intelligence Report…</div>
+          <div class="intel-block-header"> Generating AI Intelligence Report…</div>
           <div class="intel-block-body">
             ${[1,2,3,4].map(() => `<div class="skeleton" style="height:12px;margin-bottom:var(--space-2);width:${60+Math.random()*35}%;"></div>`).join('')}
           </div>
@@ -894,7 +894,7 @@ Be direct and specific. Max 120 words.`;
   renderStaticBriefing() {
     const html = `
       <div class="intel-block">
-        <div class="intel-block-header">✦ Daily Intelligence Report</div>
+        <div class="intel-block-header"> Daily Intelligence Report</div>
         <div class="intel-block-body">
           <div class="report-title">No Briefing Available</div>
           <div class="report-byline">CryptoDesk · ${new Date().toUTCString().slice(0, 22)}</div>

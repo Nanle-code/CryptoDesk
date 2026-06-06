@@ -45,7 +45,7 @@ export default function Masthead({ tickers, onBriefing, briefingLoading }) {
           {hasSoso ? 'API connected' : 'Connect API'}
         </button>
         <button type="button" className="btn-primary" disabled={briefingLoading} onClick={onBriefing}>
-          {briefingLoading ? 'Generating…' : '✦ AI Briefing'}
+          {briefingLoading ? 'Generating…' : ' AI Briefing'}
         </button>
       </div>
     </header>
